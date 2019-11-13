@@ -26,6 +26,14 @@ import Unsafe.Coerce (unsafeCoerce)
 
 foreign import data OneOf :: Type -> Type -> Type
 
+instance oneOfEq :: (Eq a, Eq b, RawType a, RawType b) => Eq (OneOf a b) where
+  eq o o' = case isTypeA o, isTypeA o' of
+    true, true -> (unsafeCoerce o :: a) == (unsafeCoerce o')
+    false, false -> (unsafeCoerce o :: b) == (unsafeCoerce o')
+    _, _ -> false
+    where
+      isTypeA = isOfType (Proxy :: Proxy a) <<< unsafeToForeign
+
 infixr 7 type OneOf as |+|
 
 class InOneOf a h t
@@ -53,7 +61,6 @@ fromOneOf f =
 class RawType a where
   isOfType :: Proxy a -> Foreign -> Boolean
 
-
 instance rawTypeBoolean :: RawType Boolean where
   isOfType _ = isOfJsType "boolean"
 
@@ -68,6 +75,9 @@ instance rawTypeString :: RawType String where
 
 instance rawTypeUndefined :: RawType Undefined where
   isOfType _ = isOfJsType "undefined"
+
+instance rawTypeOneOf :: (RawType a, RawType a') => RawType (OneOf a a') where
+  isOfType _ = isOfType (Proxy :: Proxy a) || isOfType (Proxy :: Proxy a')
 
 isOfJsType :: String -> Foreign -> Boolean
 isOfJsType name f =

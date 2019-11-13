@@ -6,7 +6,7 @@ import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Console (log)
 import OneOf (type (|+|), Undefined, asOneOf, fromOneOf, undefined, urecord)
-import Test.Assert (assertEqual)
+import Test.Assert (assertEqual, assertTrue)
 
 type ISB = Int |+| String |+| Boolean
 
@@ -45,6 +45,11 @@ main = do
     { actual: fromOneOf isbString
     , expected: (Nothing :: Maybe Int)
     }
+
+  -- Eq instance
+  assertTrue (isbInt == isbInt)
+  assertTrue (isbInt /= asOneOf 100)
+  assertTrue (isbString /= asOneOf 100)
 
   -- urecord compile tests
   let pExplicitOneOf =
