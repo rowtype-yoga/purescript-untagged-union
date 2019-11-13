@@ -4,6 +4,9 @@ module OneOf
        , class InOneOf
        , class RawType
        , isOfType
+       , Undefined
+       , undefined
+       , UndefinedOr
        , asOneOf
        , fromOneOf
        ) where
@@ -24,6 +27,11 @@ instance inOneOfHead :: InOneOf a a t
 else instance inOneOfLast :: InOneOf a h a
 else instance inOneOfTail :: (InOneOf a h' t') => InOneOf a h (OneOf h' t')
 
+foreign import data Undefined :: Type
+foreign import undefined :: Undefined
+
+type UndefinedOr a = OneOf a Undefined
+
 asOneOf :: forall a h t. InOneOf a h t => a -> OneOf h t
 asOneOf = unsafeCoerce
 
@@ -36,6 +44,7 @@ fromOneOf f =
 class RawType a where
   isOfType :: Proxy a -> Foreign -> Boolean
 
+
 instance rawTypeBoolean :: RawType Boolean where
   isOfType _ = isOfJsType "boolean"
 
@@ -47,6 +56,9 @@ instance rawTypeNumber :: RawType Number where
 
 instance rawTypeString :: RawType String where
   isOfType _ = isOfJsType "string"
+
+instance rawTypeUndefined :: RawType Undefined where
+  isOfType _ = isOfJsType "undefined"
 
 isOfJsType :: String -> Foreign -> Boolean
 isOfJsType name f =
