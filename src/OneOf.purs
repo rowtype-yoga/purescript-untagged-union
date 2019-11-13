@@ -7,14 +7,20 @@ module OneOf
        , Undefined
        , undefined
        , UndefinedOr
+       , class HasUndefined
        , asOneOf
        , fromOneOf
+       -- Record helpers
+       , class CoercibleRecord
+       , class CoercibleRecordRL
+       , urecord
        ) where
 
 import Prelude
 
 import Data.Maybe (Maybe(..))
 import Foreign (Foreign, unsafeToForeign)
+import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -31,6 +37,9 @@ foreign import data Undefined :: Type
 foreign import undefined :: Undefined
 
 type UndefinedOr a = OneOf a Undefined
+
+class HasUndefined h t
+instance hasUndefinedInstance :: InOneOf Undefined h t => HasUndefined h t
 
 asOneOf :: forall a h t. InOneOf a h t => a -> OneOf h t
 asOneOf = unsafeCoerce
@@ -66,3 +75,27 @@ isOfJsType name f =
 
 foreign import jsTypeOf :: Foreign -> String
 foreign import isInt :: Foreign -> Boolean
+
+urecord :: forall r r'. CoercibleRecord r r' => {|r} -> {|r'}
+urecord = unsafeCoerce
+
+class CoercibleRecord (r :: #Type) (r' :: #Type)
+
+instance coercibleRecordInstance ::
+  ( RowToList r rl
+  , RowToList r' rl'
+  , CoercibleRecordRL rl rl'
+  ) => CoercibleRecord r r'
+
+class CoercibleRecordRL (rl :: RowList) (rl' :: RowList)
+
+instance coercibleRecordRLNil :: CoercibleRecordRL Nil Nil
+else instance coercibleRecordRLConsDirect :: CoercibleRecordRL trl trl' => CoercibleRecordRL (Cons name typ trl) (Cons name typ trl')
+else instance coercibleRecordRLConsOneOf ::
+  ( CoercibleRecordRL trl trl'
+  , InOneOf typ oneOfH oneOfT
+  ) => CoercibleRecordRL (Cons name typ trl) (Cons name (OneOf oneOfH oneOfT) trl')
+else instance coercibleRecordRLConsOptional ::
+  ( CoercibleRecordRL trl trl'
+  , HasUndefined oneOfH oneOfT
+  ) => CoercibleRecordRL trl (Cons name (OneOf oneOfH oneOfT) trl')
