@@ -12,6 +12,7 @@ You can edit this file as you like.
     , "maybe"
     , "proxy"
     , "psci-support"
+    , "tuples"
     , "unsafe-coerce"
     ]
 , packages =

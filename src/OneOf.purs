@@ -11,6 +11,8 @@ module OneOf
        , asOneOf
        , fromOneOf
        , toEither1
+       , class Reducible
+       , reduce
        -- Record helpers
        , class CoercibleRecord
        , class CoercibleRecordRL
@@ -21,6 +23,7 @@ import Prelude
 
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
+import Data.Tuple.Nested (type (/\), (/\))
 import Foreign (Foreign, unsafeToForeign)
 import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
 import Type.Proxy (Proxy(..))
@@ -99,6 +102,21 @@ isOfJsType name f =
 
 foreign import jsTypeOf :: Foreign -> String
 foreign import isInt :: Foreign -> Boolean
+
+class Reducible f i o | i -> f o, f o -> i where
+  reduce :: f -> i -> o
+
+instance reduceOneOf ::
+  ( Reducible tf b o
+  , RawType a
+  , RawType b
+  ) => Reducible ((a -> o) /\ tf) (OneOf a b) o where
+  reduce (f /\ tf) o =
+    case toEither1 o of
+      Left a -> f a
+      Right b -> reduce tf b
+else instance reduceA :: Reducible (a -> b) a b where
+  reduce = ($)
 
 urecord :: forall r r'. CoercibleRecord r r' => {|r} -> {|r'}
 urecord = unsafeCoerce

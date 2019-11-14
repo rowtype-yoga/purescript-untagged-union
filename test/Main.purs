@@ -4,9 +4,10 @@ import Prelude
 
 import Data.Either (Either(..), isLeft)
 import Data.Maybe (Maybe(..))
+import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Console (log)
-import OneOf (type (|+|), Undefined, asOneOf, fromOneOf, toEither1, undefined, urecord)
+import OneOf (type (|+|), Undefined, asOneOf, fromOneOf, toEither1, reduce, undefined, urecord)
 import Test.Assert (assertEqual, assertTrue)
 
 type ISB = Int |+| String |+| Boolean
@@ -60,6 +61,22 @@ main = do
   assertTrue (isLeft $ toEither1 (asOneOf 3 :: Int |+| Int))
   assertTrue (isLeft $ toEither1 (asOneOf 3.0 :: Int |+| Number))
 
+  -- reduce
+  let
+    reduceISB =
+        reduce ( (\(i :: Int) -> "i" <> show i)
+                 /\ (\(s :: String) -> "s" <> s)
+                 /\ (\(b :: Boolean) -> "b" <> show b)
+               )
+  assertEqual
+    { actual: reduceISB isbInt
+    , expected: "i20"
+    }
+  assertEqual
+    { actual: reduceISB isbString
+    , expected: "sfoo"
+    }
+
   -- urecord compile tests
   let pExplicitOneOf =
         urecord { str: "foo"
@@ -106,6 +123,5 @@ main = do
 --                , numOrUndef: "bar"
 --                , strOrNumOrUndef: 3.0
 --                } :: Props
-
 
   log "done"
