@@ -2,10 +2,11 @@ module Test.Main where
 
 import Prelude
 
+import Data.Either (Either(..), isLeft)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Console (log)
-import OneOf (type (|+|), Undefined, asOneOf, fromOneOf, undefined, urecord)
+import OneOf (type (|+|), Undefined, asOneOf, fromOneOf, toEither1, undefined, urecord)
 import Test.Assert (assertEqual, assertTrue)
 
 type ISB = Int |+| String |+| Boolean
@@ -50,6 +51,14 @@ main = do
   assertTrue (isbInt == isbInt)
   assertTrue (isbInt /= asOneOf 100)
   assertTrue (isbString /= asOneOf 100)
+
+  -- toEither1
+  assertTrue (toEither1 isbInt == (Left 20 :: Either Int (String |+| Boolean)))
+  assertTrue (toEither1 isbString == (Right (asOneOf "foo")))
+
+  -- left bias:
+  assertTrue (isLeft $ toEither1 (asOneOf 3 :: Int |+| Int))
+  assertTrue (isLeft $ toEither1 (asOneOf 3.0 :: Int |+| Number))
 
   -- urecord compile tests
   let pExplicitOneOf =

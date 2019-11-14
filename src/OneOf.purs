@@ -10,6 +10,7 @@ module OneOf
        , class HasUndefined
        , asOneOf
        , fromOneOf
+       , toEither1
        -- Record helpers
        , class CoercibleRecord
        , class CoercibleRecordRL
@@ -18,6 +19,7 @@ module OneOf
 
 import Prelude
 
+import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Foreign (Foreign, unsafeToForeign)
 import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
@@ -27,12 +29,10 @@ import Unsafe.Coerce (unsafeCoerce)
 foreign import data OneOf :: Type -> Type -> Type
 
 instance oneOfEq :: (Eq a, Eq b, RawType a, RawType b) => Eq (OneOf a b) where
-  eq o o' = case isTypeA o, isTypeA o' of
-    true, true -> (unsafeCoerce o :: a) == (unsafeCoerce o')
-    false, false -> (unsafeCoerce o :: b) == (unsafeCoerce o')
+  eq o o' = case toEither1 o, toEither1 o' of
+    Left a, Left a' -> a == a'
+    Right b, Right b' -> b == b'
     _, _ -> false
-    where
-      isTypeA = isOfType (Proxy :: Proxy a) <<< unsafeToForeign
 
 infixr 7 type OneOf as |+|
 
@@ -57,6 +57,20 @@ fromOneOf f =
   if isOfType (Proxy :: Proxy a) (unsafeToForeign f)
   then Just $ unsafeCoerce f
   else Nothing
+
+--| Unwraps a single layer of `OneOf` to an Either
+--| Note that for some `x :: a |+| b`. If the value `x` has a runtime
+--| value that can be read as either types `a` and `b`, then
+--| `toEither1 x` will return `Left`.
+--|
+--| Example: toEither1 (asOneOf 3.0 :: Int |+| Number) == Left 3
+toEither1 :: forall a b. RawType a => RawType b => OneOf a b -> Either a b
+toEither1 o =
+  if isTypeA o
+  then Left (unsafeCoerce o)
+  else Right (unsafeCoerce o)
+  where
+    isTypeA = isOfType (Proxy :: Proxy a) <<< unsafeToForeign
 
 class RawType a where
   isOfType :: Proxy a -> Foreign -> Boolean
