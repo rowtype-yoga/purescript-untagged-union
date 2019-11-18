@@ -9,7 +9,8 @@ import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Console (log)
-import Runtime.OneOf (type (|+|), Undefined, asOneOf, fromOneOf, toEither1, reduce, undefined, urecord)
+import Runtime.OneOf (type (|+|), asOneOf, fromOneOf, toEither1, reduce, urecord)
+import Runtime.Undefined (Undefined, undefined)
 import Test.Assert (assertEqual, assertTrue)
 
 type ISB = Int |+| String |+| Boolean

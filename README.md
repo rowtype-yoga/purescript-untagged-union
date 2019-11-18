@@ -42,6 +42,8 @@ isb2 = asOneOf "foo"
 The library also defines `Undefined`. Combined with `OneOf`, it can represent an optional type:
 
 ```purescript
+import Runtime.Undefined
+
 type OptionalInt = Int |+| Undefined
 ```
 

@@ -2,8 +2,6 @@ module Runtime.OneOf
        ( OneOf
        , type (|+|)
        , class InOneOf
-       , Undefined
-       , undefined
        , UndefinedOr
        , class HasUndefined
        , asOneOf
@@ -24,6 +22,7 @@ import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested (type (/\), (/\))
 import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
 import Runtime.TypeCheck (class HasRuntimeType, hasRuntimeType)
+import Runtime.Undefined (Undefined)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -44,9 +43,6 @@ class InOneOf a h t
 instance inOneOfHead :: InOneOf a a t
 else instance inOneOfLast :: InOneOf a h a
 else instance inOneOfTail :: (InOneOf a h' t') => InOneOf a h (OneOf h' t')
-
-foreign import data Undefined :: Type
-foreign import undefined :: Undefined
 
 type UndefinedOr a = OneOf a Undefined
 
