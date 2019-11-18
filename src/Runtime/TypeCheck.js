@@ -1,5 +1,3 @@
-exports.undefined = undefined;
-
 exports.jsTypeOf = function (x) {
   return typeof(x);
 };

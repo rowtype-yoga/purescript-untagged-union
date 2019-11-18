@@ -10,6 +10,7 @@ You can edit this file as you like.
     , "effect"
     , "foreign"
     , "maybe"
+    , "newtype"
     , "proxy"
     , "psci-support"
     , "tuples"

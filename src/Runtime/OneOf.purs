@@ -1,9 +1,7 @@
-module OneOf
+module Runtime.OneOf
        ( OneOf
        , type (|+|)
        , class InOneOf
-       , class RawType
-       , isOfType
        , Undefined
        , undefined
        , UndefinedOr
@@ -24,18 +22,21 @@ import Prelude
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested (type (/\), (/\))
-import Foreign (Foreign, unsafeToForeign)
 import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
+import Runtime.TypeCheck (class HasRuntimeType, hasRuntimeType)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 foreign import data OneOf :: Type -> Type -> Type
 
-instance oneOfEq :: (Eq a, Eq b, RawType a, RawType b) => Eq (OneOf a b) where
+instance oneOfEq :: (Eq a, Eq b, HasRuntimeType a, HasRuntimeType b) => Eq (OneOf a b) where
   eq o o' = case toEither1 o, toEither1 o' of
     Left a, Left a' -> a == a'
     Right b, Right b' -> b == b'
     _, _ -> false
+
+instance hasRuntimeTypeOneOf :: (HasRuntimeType a, HasRuntimeType a') => HasRuntimeType (OneOf a a') where
+  hasRuntimeType _ x = hasRuntimeType (Proxy :: Proxy a) x || hasRuntimeType (Proxy :: Proxy a') x
 
 infixr 7 type OneOf as |+|
 
@@ -55,9 +56,9 @@ instance hasUndefinedInstance :: InOneOf Undefined h t => HasUndefined h t
 asOneOf :: forall a h t. InOneOf a h t => a -> OneOf h t
 asOneOf = unsafeCoerce
 
-fromOneOf :: forall h t a. InOneOf a h t => RawType a => OneOf h t -> Maybe a
+fromOneOf :: forall h t a. InOneOf a h t => HasRuntimeType a => OneOf h t -> Maybe a
 fromOneOf f =
-  if isOfType (Proxy :: Proxy a) (unsafeToForeign f)
+  if hasRuntimeType (Proxy :: Proxy a) f
   then Just $ unsafeCoerce f
   else Nothing
 
@@ -67,49 +68,21 @@ fromOneOf f =
 --| `toEither1 x` will return `Left`.
 --|
 --| Example: toEither1 (asOneOf 3.0 :: Int |+| Number) == Left 3
-toEither1 :: forall a b. RawType a => RawType b => OneOf a b -> Either a b
+toEither1 :: forall a b. HasRuntimeType a => HasRuntimeType b => OneOf a b -> Either a b
 toEither1 o =
   if isTypeA o
   then Left (unsafeCoerce o)
   else Right (unsafeCoerce o)
   where
-    isTypeA = isOfType (Proxy :: Proxy a) <<< unsafeToForeign
-
-class RawType a where
-  isOfType :: Proxy a -> Foreign -> Boolean
-
-instance rawTypeBoolean :: RawType Boolean where
-  isOfType _ = isOfJsType "boolean"
-
-instance rawTypeInt :: RawType Int where
-  isOfType _ = isInt
-
-instance rawTypeNumber :: RawType Number where
-  isOfType _ = isOfJsType "number"
-
-instance rawTypeString :: RawType String where
-  isOfType _ = isOfJsType "string"
-
-instance rawTypeUndefined :: RawType Undefined where
-  isOfType _ = isOfJsType "undefined"
-
-instance rawTypeOneOf :: (RawType a, RawType a') => RawType (OneOf a a') where
-  isOfType _ = isOfType (Proxy :: Proxy a) || isOfType (Proxy :: Proxy a')
-
-isOfJsType :: String -> Foreign -> Boolean
-isOfJsType name f =
-  jsTypeOf f == name
-
-foreign import jsTypeOf :: Foreign -> String
-foreign import isInt :: Foreign -> Boolean
+    isTypeA = hasRuntimeType (Proxy :: Proxy a)
 
 class Reducible f i o | i -> f o, f o -> i where
   reduce :: f -> i -> o
 
 instance reduceOneOf ::
   ( Reducible tf b o
-  , RawType a
-  , RawType b
+  , HasRuntimeType a
+  , HasRuntimeType b
   ) => Reducible ((a -> o) /\ tf) (OneOf a b) o where
   reduce (f /\ tf) o =
     case toEither1 o of

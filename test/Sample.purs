@@ -1,6 +1,6 @@
 module Test.Sample where
 
-import OneOf (type (|+|), Undefined, UndefinedOr, asOneOf, fromOneOf, urecord)
+import Runtime.OneOf (type (|+|), Undefined, UndefinedOr, asOneOf, fromOneOf, urecord)
 import Data.Maybe (Maybe)
 
 type ISB = Int |+| String |+| Boolean
