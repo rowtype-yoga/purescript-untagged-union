@@ -3,7 +3,6 @@ module Runtime.TypeCheck
        , hasRuntimeType
        , newtypeHasRuntimeType
        , cast
-       , jsTypeOf
        , hasJsType
        ) where
 
@@ -11,6 +10,9 @@ import Prelude
 
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
+import Foreign (Foreign)
+import Foreign.Object (Object)
+import Foreign.Object as Object
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -29,11 +31,20 @@ instance hasRuntimeTypeNumber :: HasRuntimeType Number where
 instance hasRuntimeTypeString :: HasRuntimeType String where
   hasRuntimeType _ = hasJsType "string"
 
+instance hasRuntimeTypeForeign :: HasRuntimeType Foreign where
+  hasRuntimeType _ _ = true
+
+instance hasRuntimeTypeObject :: HasRuntimeType e => HasRuntimeType (Object e) where
+  hasRuntimeType _ x =
+    hasJsType "object" x && (Object.all \_ -> hasRuntimeTypeE) (unsafeCoerce x)
+    where
+      hasRuntimeTypeE = hasRuntimeType (Proxy :: _ e)
+
 newtypeHasRuntimeType :: forall a r x. Newtype a r => HasRuntimeType r => Proxy a -> x -> Boolean
 newtypeHasRuntimeType _ = hasRuntimeType (Proxy :: Proxy r)
 
-foreign import jsTypeOf :: forall x. x -> String
 foreign import isInt :: forall x. x -> Boolean
+foreign import jsTypeOf :: forall x. x -> String
 
 hasJsType :: forall x. String -> x -> Boolean
 hasJsType name x =

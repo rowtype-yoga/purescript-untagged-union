@@ -7,6 +7,8 @@ import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Effect (Effect)
+import Foreign (Foreign)
+import Foreign.Object as Foreign
 import Runtime.TypeCheck (class HasRuntimeType, cast, hasRuntimeType, newtypeHasRuntimeType)
 import Test.Assert (assertEqual, assertFalse, assertTrue)
 import Type.Proxy (Proxy(..))
@@ -31,6 +33,12 @@ testTypeCheck = do
 
   assertTrue (hasRuntimeType (Proxy :: _ String) "foo")
   assertFalse (hasRuntimeType (Proxy :: _ String) 2.0)
+
+  assertTrue (hasRuntimeType (Proxy :: _ Foreign) "foo")
+
+  assertFalse (hasRuntimeType (Proxy :: _ (Foreign.Object Foreign)) 2)
+  assertTrue (hasRuntimeType (Proxy :: _ (Foreign.Object Foreign)) {i: 2})
+  assertFalse (hasRuntimeType (Proxy :: _ (Foreign.Object String)) {i: 2})
 
   -- Newtypes
   assertTrue (hasRuntimeType (Proxy :: _ MyString) "foo")

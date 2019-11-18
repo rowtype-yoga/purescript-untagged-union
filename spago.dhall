@@ -9,6 +9,7 @@ You can edit this file as you like.
     , "console"
     , "effect"
     , "foreign"
+    , "foreign-object"
     , "maybe"
     , "newtype"
     , "proxy"
