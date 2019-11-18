@@ -3,14 +3,13 @@ module Runtime.TypeCheck
        , hasRuntimeType
        , newtypeHasRuntimeType
        , cast
-       , hasJsType
        ) where
 
 import Prelude
 
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
-import Foreign (Foreign)
+import Foreign (Foreign, typeOf)
 import Foreign.Object (Object)
 import Foreign.Object as Object
 import Type.Proxy (Proxy(..))
@@ -44,11 +43,10 @@ newtypeHasRuntimeType :: forall a r x. Newtype a r => HasRuntimeType r => Proxy 
 newtypeHasRuntimeType _ = hasRuntimeType (Proxy :: Proxy r)
 
 foreign import isInt :: forall x. x -> Boolean
-foreign import jsTypeOf :: forall x. x -> String
 
 hasJsType :: forall x. String -> x -> Boolean
 hasJsType name x =
-  jsTypeOf x == name
+  typeOf (unsafeCoerce x) == name
 
 cast :: forall a x. HasRuntimeType a => x -> Maybe a
 cast x =
