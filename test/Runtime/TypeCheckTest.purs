@@ -36,9 +36,15 @@ testTypeCheck = do
 
   assertTrue (hasRuntimeType (Proxy :: _ Foreign) "foo")
 
-  assertFalse (hasRuntimeType (Proxy :: _ (Foreign.Object Foreign)) 2)
   assertTrue (hasRuntimeType (Proxy :: _ (Foreign.Object Foreign)) {i: 2})
+  assertFalse (hasRuntimeType (Proxy :: _ (Foreign.Object Foreign)) 2)
   assertFalse (hasRuntimeType (Proxy :: _ (Foreign.Object String)) {i: 2})
+
+  assertTrue (hasRuntimeType (Proxy :: _ {i :: Int, s :: MyString}) {i: 2.0, s: "foo"})
+  assertTrue (hasRuntimeType (Proxy :: _ {i :: Int}) sampleWithInherited)
+  assertFalse (hasRuntimeType (Proxy :: _ {i :: Int}) 5)
+  -- should allow for extra members
+  assertTrue (hasRuntimeType (Proxy :: _ {i :: Int}) {i: 2.0, s: "foo"})
 
   -- Newtypes
   assertTrue (hasRuntimeType (Proxy :: _ MyString) "foo")
@@ -46,3 +52,5 @@ testTypeCheck = do
   -- Cast
   assertEqual { actual: cast 2.0, expected: Just 2 }
   assertEqual { actual: cast "foo", expected: (Nothing :: Maybe Int) }
+
+foreign import sampleWithInherited :: Foreign

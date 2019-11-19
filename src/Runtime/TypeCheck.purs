@@ -2,6 +2,8 @@ module Runtime.TypeCheck
        ( class HasRuntimeType
        , hasRuntimeType
        , newtypeHasRuntimeType
+       , class HasRuntimeTypeRecordRL
+       , hasRuntimeTypeRecRL
        , cast
        ) where
 
@@ -9,10 +11,13 @@ import Prelude
 
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
-import Foreign (Foreign, typeOf)
+import Data.Symbol (class IsSymbol, SProxy(..), reflectSymbol)
+import Foreign (Foreign, typeOf, unsafeToForeign)
 import Foreign.Object (Object)
 import Foreign.Object as Object
+import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
 import Type.Proxy (Proxy(..))
+import Type.RowList (RLProxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 class HasRuntimeType a where
@@ -38,6 +43,32 @@ instance hasRuntimeTypeObject :: HasRuntimeType e => HasRuntimeType (Object e) w
     hasJsType "object" x && (Object.all \_ -> hasRuntimeTypeE) (unsafeCoerce x)
     where
       hasRuntimeTypeE = hasRuntimeType (Proxy :: _ e)
+
+instance hasRuntimeTypeRecord ::
+  ( RowToList r rl
+  , HasRuntimeTypeRecordRL rl
+  ) => HasRuntimeType {|r} where
+  hasRuntimeType _ x = hasJsType "object" x && hasRuntimeTypeRecRL (RLProxy :: _ rl) (unsafeToForeign x)
+
+class HasRuntimeTypeRecordRL (rl :: RowList) where
+  hasRuntimeTypeRecRL :: RLProxy rl -> Foreign -> Boolean
+
+instance hasRuntimeTypeRecordRLNil :: HasRuntimeTypeRecordRL Nil where
+  hasRuntimeTypeRecRL _ _ = true
+
+instance hasRuntimeTypeRecordRLCons ::
+  ( HasRuntimeTypeRecordRL tl
+  , HasRuntimeType a
+  , IsSymbol sym
+  ) => HasRuntimeTypeRecordRL (Cons sym a tl) where
+  hasRuntimeTypeRecRL _ x = hasRuntimeTypeA property && hasRuntimeTypeRecRL tlProxy x
+    where
+      hasRuntimeTypeA = hasRuntimeType (Proxy :: _ a)
+      propertyName = reflectSymbol (SProxy :: _ sym)
+      property = getProperty propertyName x
+      tlProxy = RLProxy :: _ tl
+
+foreign import getProperty :: String -> Foreign -> Foreign
 
 newtypeHasRuntimeType :: forall a r x. Newtype a r => HasRuntimeType r => Proxy a -> x -> Boolean
 newtypeHasRuntimeType _ = hasRuntimeType (Proxy :: Proxy r)
