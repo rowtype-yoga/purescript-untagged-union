@@ -9,8 +9,8 @@ import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Console (log)
-import Runtime.OneOf (type (|+|), asOneOf, fromOneOf, toEither1, reduce, urecord)
-import Runtime.Undefined (Undefined, undefined)
+import Runtime.OneOf (type (|+|), asOneOf, fromOneOf, reduce, toEither1)
+import Runtime.Undefined (Undefined)
 import Test.Assert (assertEqual, assertTrue)
 
 type ISB = Int |+| String |+| Boolean
@@ -79,52 +79,5 @@ testOneOf = do
     { actual: reduceISB isbString
     , expected: "sfoo"
     }
-
-  -- urecord compile tests
-  let pExplicitOneOf =
-        urecord { str: "foo"
-                , isb: (asOneOf 3 :: ISB)
-                , numOrUndef: (asOneOf 2.0 :: Number |+| Undefined)
-                , strOrNumOrUndef: (asOneOf "bar" :: String |+| Number |+| Undefined)
-                } :: Props
-
-  let pNoExplicitOneOf =
-        urecord { str: "foo"
-                , isb: "bar"
-                , numOrUndef: undefined
-                , strOrNumOrUndef: 3.0
-                } :: Props
-
-  let pMixExplicitOneOf =
-        urecord { str: "foo"
-                , isb: "bar"
-                , numOrUndef: undefined
-                , strOrNumOrUndef: (asOneOf "bar" :: String |+| Number |+| Undefined)
-                } :: Props
-
-  let pOmitOptional =
-        urecord { str: "foo"
-                , isb: "bar"
-                } :: Props
-
-
-  -- should not compile
---  let pMissingStr =
---       urecord { isb: "bar"
---               , numOrUndef: undefined
---               , strOrNumOrUndef: 3.0
---               } :: Props
-
---  let pMissingIsb =
---        urecord { str: "foo"
---                , numOrUndef: undefined
---                , strOrNumOrUndef: 3.0
---                } :: Props
-
---  let pWrongNumOrUndef =
---        urecord { str: "foo"
---                , numOrUndef: "bar"
---                , strOrNumOrUndef: 3.0
---                } :: Props
 
   log "done"

@@ -3,16 +3,11 @@ module Runtime.OneOf
        , type (|+|)
        , class InOneOf
        , UndefinedOr
-       , class HasUndefined
        , asOneOf
        , fromOneOf
        , toEither1
        , class Reducible
        , reduce
-       -- Record helpers
-       , class CoercibleRecord
-       , class CoercibleRecordRL
-       , urecord
        ) where
 
 import Prelude
@@ -21,7 +16,7 @@ import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested (type (/\), (/\))
 import Foreign (unsafeToForeign)
-import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
+import Runtime.Coercible (class Coercible, coerce)
 import Runtime.TypeCheck (class HasRuntimeType, hasRuntimeType)
 import Runtime.Undefined (Undefined)
 import Type.Proxy (Proxy(..))
@@ -45,13 +40,12 @@ instance inOneOfHead :: InOneOf a a t
 else instance inOneOfLast :: InOneOf a h a
 else instance inOneOfTail :: (InOneOf a h' t') => InOneOf a h (OneOf h' t')
 
+instance coercibleOneOf :: InOneOf a h t => Coercible a (OneOf h t)
+
 type UndefinedOr a = OneOf a Undefined
 
-class HasUndefined h t
-instance hasUndefinedInstance :: InOneOf Undefined h t => HasUndefined h t
-
-asOneOf :: forall a h t. InOneOf a h t => a -> OneOf h t
-asOneOf = unsafeCoerce
+asOneOf :: forall a h t. Coercible a (OneOf h t) => a -> OneOf h t
+asOneOf = coerce
 
 fromOneOf :: forall h t a. InOneOf a h t => HasRuntimeType a => OneOf h t -> Maybe a
 fromOneOf f =
@@ -87,27 +81,3 @@ instance reduceOneOf ::
       Right b -> reduce tf b
 else instance reduceA :: Reducible (a -> b) a b where
   reduce = ($)
-
-urecord :: forall r r'. CoercibleRecord r r' => {|r} -> {|r'}
-urecord = unsafeCoerce
-
-class CoercibleRecord (r :: #Type) (r' :: #Type)
-
-instance coercibleRecordInstance ::
-  ( RowToList r rl
-  , RowToList r' rl'
-  , CoercibleRecordRL rl rl'
-  ) => CoercibleRecord r r'
-
-class CoercibleRecordRL (rl :: RowList) (rl' :: RowList)
-
-instance coercibleRecordRLNil :: CoercibleRecordRL Nil Nil
-else instance coercibleRecordRLConsDirect :: CoercibleRecordRL trl trl' => CoercibleRecordRL (Cons name typ trl) (Cons name typ trl')
-else instance coercibleRecordRLConsOneOf ::
-  ( CoercibleRecordRL trl trl'
-  , InOneOf typ oneOfH oneOfT
-  ) => CoercibleRecordRL (Cons name typ trl) (Cons name (OneOf oneOfH oneOfT) trl')
-else instance coercibleRecordRLConsOptional ::
-  ( CoercibleRecordRL trl trl'
-  , HasUndefined oneOfH oneOfT
-  ) => CoercibleRecordRL trl (Cons name (OneOf oneOfH oneOfT) trl')

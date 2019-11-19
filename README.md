@@ -85,17 +85,18 @@ type Props =
   }
 ```
 
-A `urecord` helper is made available to convert records with the same runtime value:
+A `coerce` helper is made available to convert records with the same runtime value:
 
 ```purescript
+import Runtime.Coercible (coerce)
+
 sampleProps :: Props
 sampleProps =
-  urecord { text: "foo" -- text is required and should be a string
+  coerce { text: "foo" -- text is required and should be a string
 
-          , width: 30.0 -- width is optional, and may be defined, but should be a Number
-          -- height is optional and may be omitted
-
-          , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
-          }
+         , width: 30.0 -- width is optional, and may be defined, but should be a Number
+         -- height is optional and may be omitted
+         , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
+         }
 
 ```
