@@ -7,7 +7,7 @@ import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Effect (Effect)
-import Foreign (Foreign)
+import Foreign (Foreign, unsafeToForeign)
 import Foreign.Object as Foreign
 import Runtime.TypeCheck (class HasRuntimeType, cast, hasRuntimeType, newtypeHasRuntimeType)
 import Test.Assert (assertEqual, assertFalse, assertTrue)
@@ -20,37 +20,40 @@ instance myStringHasRuntimeType :: HasRuntimeType MyString where
 
 testTypeCheck :: Effect Unit
 testTypeCheck = do
-  assertTrue (hasRuntimeType (Proxy :: _ Boolean) true)
-  assertTrue (hasRuntimeType (Proxy :: _ Boolean) false)
-  assertFalse (hasRuntimeType (Proxy :: _ Boolean) 0)
+  assertTrue (hasRuntimeTypeF (Proxy :: _ Boolean) true)
+  assertTrue (hasRuntimeTypeF (Proxy :: _ Boolean) false)
+  assertFalse (hasRuntimeTypeF (Proxy :: _ Boolean) 0)
 
-  assertTrue (hasRuntimeType (Proxy :: _ Int) 2)
-  assertTrue (hasRuntimeType (Proxy :: _ Int) 2.0)
-  assertFalse (hasRuntimeType (Proxy :: _ Int) "foo")
+  assertTrue (hasRuntimeTypeF (Proxy :: _ Int) 2)
+  assertTrue (hasRuntimeTypeF (Proxy :: _ Int) 2.0)
+  assertFalse (hasRuntimeTypeF (Proxy :: _ Int) "foo")
 
-  assertTrue (hasRuntimeType (Proxy :: _ Number) 2.2)
-  assertFalse (hasRuntimeType (Proxy :: _ Number) "foo")
+  assertTrue (hasRuntimeTypeF (Proxy :: _ Number) 2.2)
+  assertFalse (hasRuntimeTypeF (Proxy :: _ Number) "foo")
 
-  assertTrue (hasRuntimeType (Proxy :: _ String) "foo")
-  assertFalse (hasRuntimeType (Proxy :: _ String) 2.0)
+  assertTrue (hasRuntimeTypeF (Proxy :: _ String) "foo")
+  assertFalse (hasRuntimeTypeF (Proxy :: _ String) 2.0)
 
-  assertTrue (hasRuntimeType (Proxy :: _ Foreign) "foo")
+  assertTrue (hasRuntimeTypeF (Proxy :: _ Foreign) "foo")
 
-  assertTrue (hasRuntimeType (Proxy :: _ (Foreign.Object Foreign)) {i: 2})
-  assertFalse (hasRuntimeType (Proxy :: _ (Foreign.Object Foreign)) 2)
-  assertFalse (hasRuntimeType (Proxy :: _ (Foreign.Object String)) {i: 2})
+  assertTrue (hasRuntimeTypeF (Proxy :: _ (Foreign.Object Foreign)) {i: 2})
+  assertFalse (hasRuntimeTypeF (Proxy :: _ (Foreign.Object Foreign)) 2)
+  assertFalse (hasRuntimeTypeF (Proxy :: _ (Foreign.Object String)) {i: 2})
 
-  assertTrue (hasRuntimeType (Proxy :: _ {i :: Int, s :: MyString}) {i: 2.0, s: "foo"})
-  assertTrue (hasRuntimeType (Proxy :: _ {i :: Int}) sampleWithInherited)
-  assertFalse (hasRuntimeType (Proxy :: _ {i :: Int}) 5)
+  assertTrue (hasRuntimeTypeF (Proxy :: _ {i :: Int, s :: MyString}) {i: 2.0, s: "foo"})
+  assertTrue (hasRuntimeTypeF (Proxy :: _ {i :: Int}) sampleWithInherited)
+  assertFalse (hasRuntimeTypeF (Proxy :: _ {i :: Int}) 5)
   -- should allow for extra members
-  assertTrue (hasRuntimeType (Proxy :: _ {i :: Int}) {i: 2.0, s: "foo"})
+  assertTrue (hasRuntimeTypeF (Proxy :: _ {i :: Int}) {i: 2.0, s: "foo"})
 
   -- Newtypes
-  assertTrue (hasRuntimeType (Proxy :: _ MyString) "foo")
+  assertTrue (hasRuntimeTypeF (Proxy :: _ MyString) "foo")
 
   -- Cast
   assertEqual { actual: cast 2.0, expected: Just 2 }
   assertEqual { actual: cast "foo", expected: (Nothing :: Maybe Int) }
 
 foreign import sampleWithInherited :: Foreign
+
+hasRuntimeTypeF :: forall a x. HasRuntimeType a => Proxy a -> x -> Boolean
+hasRuntimeTypeF p x = hasRuntimeType p (unsafeToForeign x)

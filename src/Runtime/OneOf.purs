@@ -20,6 +20,7 @@ import Prelude
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested (type (/\), (/\))
+import Foreign (unsafeToForeign)
 import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
 import Runtime.TypeCheck (class HasRuntimeType, hasRuntimeType)
 import Runtime.Undefined (Undefined)
@@ -54,7 +55,7 @@ asOneOf = unsafeCoerce
 
 fromOneOf :: forall h t a. InOneOf a h t => HasRuntimeType a => OneOf h t -> Maybe a
 fromOneOf f =
-  if hasRuntimeType (Proxy :: Proxy a) f
+  if hasRuntimeType (Proxy :: Proxy a) (unsafeToForeign f)
   then Just $ unsafeCoerce f
   else Nothing
 
@@ -66,7 +67,7 @@ fromOneOf f =
 --| Example: toEither1 (asOneOf 3.0 :: Int |+| Number) == Left 3
 toEither1 :: forall a b. HasRuntimeType a => HasRuntimeType b => OneOf a b -> Either a b
 toEither1 o =
-  if isTypeA o
+  if isTypeA (unsafeToForeign o)
   then Left (unsafeCoerce o)
   else Right (unsafeCoerce o)
   where

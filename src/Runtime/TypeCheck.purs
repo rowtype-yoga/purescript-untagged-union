@@ -21,7 +21,7 @@ import Type.RowList (RLProxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 class HasRuntimeType a where
-  hasRuntimeType :: forall x. Proxy a -> x -> Boolean
+  hasRuntimeType :: Proxy a -> Foreign -> Boolean
 
 instance hasRuntimeTypeBoolean :: HasRuntimeType Boolean where
   hasRuntimeType _ = hasJsType "boolean"
@@ -70,7 +70,7 @@ instance hasRuntimeTypeRecordRLCons ::
 
 foreign import getProperty :: String -> Foreign -> Foreign
 
-newtypeHasRuntimeType :: forall a r x. Newtype a r => HasRuntimeType r => Proxy a -> x -> Boolean
+newtypeHasRuntimeType :: forall a r. Newtype a r => HasRuntimeType r => Proxy a -> Foreign -> Boolean
 newtypeHasRuntimeType _ = hasRuntimeType (Proxy :: Proxy r)
 
 foreign import isInt :: forall x. x -> Boolean
@@ -81,7 +81,7 @@ hasJsType name x =
 
 cast :: forall a x. HasRuntimeType a => x -> Maybe a
 cast x =
-  if hasRuntimeTypeA x
+  if hasRuntimeTypeA (unsafeToForeign x)
   then Just (unsafeCoerce x)
   else Nothing
 
