@@ -10,6 +10,7 @@ import Effect (Effect)
 import Foreign (Foreign, unsafeToForeign)
 import Foreign.Object as Foreign
 import Runtime.TypeCheck (class HasRuntimeType, cast, hasRuntimeType, newtypeHasRuntimeType)
+import Runtime.Undefined (Undefined, undefined)
 import Test.Assert (assertEqual, assertFalse, assertTrue)
 import Type.Proxy (Proxy(..))
 
@@ -20,6 +21,9 @@ instance myStringHasRuntimeType :: HasRuntimeType MyString where
 
 testTypeCheck :: Effect Unit
 testTypeCheck = do
+  assertTrue (hasRuntimeTypeF (Proxy :: _ Undefined) undefined)
+  assertFalse (hasRuntimeTypeF (Proxy :: _ Undefined) true)
+
   assertTrue (hasRuntimeTypeF (Proxy :: _ Boolean) true)
   assertTrue (hasRuntimeTypeF (Proxy :: _ Boolean) false)
   assertFalse (hasRuntimeTypeF (Proxy :: _ Boolean) 0)

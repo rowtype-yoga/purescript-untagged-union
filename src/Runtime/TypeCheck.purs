@@ -16,12 +16,16 @@ import Foreign (Foreign, typeOf, unsafeToForeign)
 import Foreign.Object (Object)
 import Foreign.Object as Object
 import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
+import Runtime.Undefined (Undefined)
 import Type.Proxy (Proxy(..))
 import Type.RowList (RLProxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 class HasRuntimeType a where
   hasRuntimeType :: Proxy a -> Foreign -> Boolean
+
+instance hasRuntimeTypeUndefined :: HasRuntimeType Undefined where
+  hasRuntimeType _ = hasJsType "undefined"
 
 instance hasRuntimeTypeBoolean :: HasRuntimeType Boolean where
   hasRuntimeType _ = hasJsType "boolean"
