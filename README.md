@@ -7,7 +7,7 @@ A data type for untagged unions.
 Consider a the following type:
 
 ```purescript
-import OneOf
+import Runtime.OneOf
 
 type ISB = Int |+| String |+| Boolean
 ```
@@ -42,6 +42,8 @@ isb2 = asOneOf "foo"
 The library also defines `Undefined`. Combined with `OneOf`, it can represent an optional type:
 
 ```purescript
+import Runtime.Undefined
+
 type OptionalInt = Int |+| Undefined
 ```
 
@@ -83,17 +85,18 @@ type Props =
   }
 ```
 
-A `urecord` helper is made available to convert records with the same runtime value:
+A `coerce` helper is made available to convert records with the same runtime value:
 
 ```purescript
+import Runtime.Coercible (coerce)
+
 sampleProps :: Props
 sampleProps =
-  urecord { text: "foo" -- text is required and should be a string
+  coerce { text: "foo" -- text is required and should be a string
 
-          , width: 30.0 -- width is optional, and may be defined, but should be a Number
-          -- height is optional and may be omitted
-
-          , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
-          }
+         , width: 30.0 -- width is optional, and may be defined, but should be a Number
+         -- height is optional and may be omitted
+         , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
+         }
 
 ```

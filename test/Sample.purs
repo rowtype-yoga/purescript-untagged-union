@@ -1,7 +1,9 @@
 module Test.Sample where
 
-import OneOf (type (|+|), Undefined, UndefinedOr, asOneOf, fromOneOf, urecord)
 import Data.Maybe (Maybe)
+import Runtime.Coercible (coerce)
+import Runtime.OneOf (type (|+|), UndefinedOr, asOneOf, fromOneOf)
+import Runtime.Undefined (Undefined)
 
 type ISB = Int |+| String |+| Boolean
 
@@ -37,10 +39,10 @@ type Props =
 
 sampleProps :: Props
 sampleProps =
-  urecord { text: "foo" -- text is required and should be a string
+  coerce { text: "foo" -- text is required and should be a string
 
-          , width: 30.0 -- width is optional, and may be defined, but should be a Number
-          -- height is optional and may be omitted
+         , width: 30.0 -- width is optional, and may be defined, but should be a Number
+           -- height is optional and may be omitted
 
-          , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
-          }
+         , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
+         }
