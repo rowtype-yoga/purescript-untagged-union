@@ -1,4 +1,4 @@
-module Untagged.OneOf
+module Untagged.Union
        ( OneOf
        , type (|+|)
        , class InOneOf

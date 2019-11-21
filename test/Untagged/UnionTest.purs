@@ -1,5 +1,5 @@
-module Untagged.OneOfTest
-       ( testOneOf
+module Untagged.UnionTest
+       ( testUnion
        ) where
 
 import Prelude
@@ -10,7 +10,7 @@ import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Console (log)
 import Test.Assert (assertEqual, assertTrue)
-import Untagged.OneOf (type (|+|), asOneOf, fromOneOf, reduce, toEither1)
+import Untagged.Union (type (|+|), asOneOf, fromOneOf, reduce, toEither1)
 import Untagged.Undefined (Undefined)
 
 type ISB = Int |+| String |+| Boolean
@@ -22,8 +22,8 @@ type Props =
   , strOrNumOrUndef :: String |+| Number |+| Undefined
   }
 
-testOneOf :: Effect Unit
-testOneOf = do
+testUnion :: Effect Unit
+testUnion = do
   -- asOneOf compile tests
   let isbInt = asOneOf 20 :: ISB
   let isbString = asOneOf "foo" :: ISB

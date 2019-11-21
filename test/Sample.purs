@@ -2,7 +2,7 @@ module Test.Sample where
 
 import Data.Maybe (Maybe)
 import Untagged.Coercible (coerce)
-import Untagged.OneOf (type (|+|), UndefinedOr, asOneOf, fromOneOf)
+import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf)
 import Untagged.Undefined (Undefined)
 
 type ISB = Int |+| String |+| Boolean

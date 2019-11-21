@@ -7,7 +7,7 @@ A data type for untagged unions.
 Consider a the following type:
 
 ```purescript
-import Untagged.OneOf
+import Untagged.Union
 
 type ISB = Int |+| String |+| Boolean
 ```

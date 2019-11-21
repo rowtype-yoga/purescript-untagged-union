@@ -6,7 +6,7 @@ import Prelude
 
 import Effect (Effect)
 import Untagged.Coercible (coerce)
-import Untagged.OneOf (type (|+|))
+import Untagged.Union (type (|+|))
 import Untagged.Undefined (Undefined, undefined)
 
 type Props =
