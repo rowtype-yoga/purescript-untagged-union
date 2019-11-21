@@ -1,4 +1,4 @@
-module Runtime.TypeCheck
+module Untagged.TypeCheck
        ( class HasRuntimeType
        , hasRuntimeType
        , newtypeHasRuntimeType
@@ -16,10 +16,10 @@ import Foreign (Foreign, typeOf, unsafeToForeign)
 import Foreign.Object (Object)
 import Foreign.Object as Object
 import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
-import Runtime.Undefined (Undefined)
 import Type.Proxy (Proxy(..))
 import Type.RowList (RLProxy(..))
 import Unsafe.Coerce (unsafeCoerce)
+import Untagged.Undefined (Undefined)
 
 class HasRuntimeType a where
   hasRuntimeType :: Proxy a -> Foreign -> Boolean

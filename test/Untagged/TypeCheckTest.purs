@@ -1,4 +1,4 @@
-module Runtime.TypeCheckTest
+module Untagged.TypeCheckTest
        ( testTypeCheck
        ) where
 
@@ -9,10 +9,10 @@ import Data.Newtype (class Newtype)
 import Effect (Effect)
 import Foreign (Foreign, unsafeToForeign)
 import Foreign.Object as Foreign
-import Runtime.TypeCheck (class HasRuntimeType, cast, hasRuntimeType, newtypeHasRuntimeType)
-import Runtime.Undefined (Undefined, undefined)
 import Test.Assert (assertEqual, assertFalse, assertTrue)
 import Type.Proxy (Proxy(..))
+import Untagged.TypeCheck (class HasRuntimeType, cast, hasRuntimeType, newtypeHasRuntimeType)
+import Untagged.Undefined (Undefined, undefined)
 
 newtype MyString = MyString String
 derive instance myStringNewtype :: Newtype MyString _

@@ -5,10 +5,10 @@ module Test.Main
 import Prelude
 
 import Effect (Effect)
-import Runtime.OneOfTest (testOneOf)
-import Runtime.TypeCheckTest (testTypeCheck)
+import Untagged.UnionTest (testUnion)
+import Untagged.TypeCheckTest (testTypeCheck)
 
 main :: Effect Unit
 main = do
   testTypeCheck
-  testOneOf
+  testUnion

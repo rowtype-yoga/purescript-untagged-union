@@ -7,7 +7,7 @@ A data type for untagged unions.
 Consider a the following type:
 
 ```purescript
-import Runtime.OneOf
+import Untagged.Union
 
 type ISB = Int |+| String |+| Boolean
 ```
@@ -42,7 +42,7 @@ isb2 = asOneOf "foo"
 The library also defines `Undefined`. Combined with `OneOf`, it can represent an optional type:
 
 ```purescript
-import Runtime.Undefined
+import Untagged.Undefined
 
 type OptionalInt = Int |+| Undefined
 ```
@@ -88,7 +88,7 @@ type Props =
 A `coerce` helper is made available to convert records with the same runtime value:
 
 ```purescript
-import Runtime.Coercible (coerce)
+import Untagged.Coercible (coerce)
 
 sampleProps :: Props
 sampleProps =
