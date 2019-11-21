@@ -1,4 +1,4 @@
-module Runtime.OneOfTest
+module Untagged.OneOfTest
        ( testOneOf
        ) where
 
@@ -9,9 +9,9 @@ import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Console (log)
-import Runtime.OneOf (type (|+|), asOneOf, fromOneOf, reduce, toEither1)
-import Runtime.Undefined (Undefined)
 import Test.Assert (assertEqual, assertTrue)
+import Untagged.OneOf (type (|+|), asOneOf, fromOneOf, reduce, toEither1)
+import Untagged.Undefined (Undefined)
 
 type ISB = Int |+| String |+| Boolean
 

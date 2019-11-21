@@ -1,4 +1,4 @@
-module Runtime.Coercible
+module Untagged.Coercible
        ( class Coercible
        , class CoercibleRecordRL
        , coerce
@@ -6,8 +6,8 @@ module Runtime.Coercible
 
 import Foreign (Foreign)
 import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
-import Runtime.Undefined (Undefined)
 import Unsafe.Coerce (unsafeCoerce)
+import Untagged.Undefined (Undefined)
 
 --| A `Coercible a b` exists if all values of type `a` have
 --| runtime values that can be interpreted as that of type `b`.
@@ -36,7 +36,6 @@ else instance coercibleRecordRLConsOptional ::
   ( CoercibleRecordRL trl trl'
   , Coercible Undefined t
   ) => CoercibleRecordRL trl (Cons name t trl')
-
 
 coerce :: forall a b. Coercible a b => a -> b
 coerce = unsafeCoerce

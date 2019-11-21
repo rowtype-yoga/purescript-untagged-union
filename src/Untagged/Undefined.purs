@@ -1,4 +1,4 @@
-module Runtime.Undefined
+module Untagged.Undefined
        ( Undefined
        , undefined
        ) where

@@ -5,8 +5,8 @@ module Test.Main
 import Prelude
 
 import Effect (Effect)
-import Runtime.OneOfTest (testOneOf)
-import Runtime.TypeCheckTest (testTypeCheck)
+import Untagged.OneOfTest (testOneOf)
+import Untagged.TypeCheckTest (testTypeCheck)
 
 main :: Effect Unit
 main = do

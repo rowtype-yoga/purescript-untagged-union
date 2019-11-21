@@ -1,4 +1,4 @@
-module Runtime.OneOf
+module Untagged.OneOf
        ( OneOf
        , type (|+|)
        , class InOneOf
@@ -16,11 +16,11 @@ import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested (type (/\), (/\))
 import Foreign (unsafeToForeign)
-import Runtime.Coercible (class Coercible, coerce)
-import Runtime.TypeCheck (class HasRuntimeType, hasRuntimeType)
-import Runtime.Undefined (Undefined)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
+import Untagged.Coercible (class Coercible, coerce)
+import Untagged.TypeCheck (class HasRuntimeType, hasRuntimeType)
+import Untagged.Undefined (Undefined)
 
 foreign import data OneOf :: Type -> Type -> Type
 

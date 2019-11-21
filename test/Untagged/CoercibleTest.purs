@@ -1,13 +1,13 @@
-module Runtime.CoercibleTest
+module Untagged.CoercibleTest
        ( testCoerce
        ) where
 
 import Prelude
 
 import Effect (Effect)
-import Runtime.Coercible (coerce)
-import Runtime.OneOf (type (|+|))
-import Runtime.Undefined (Undefined, undefined)
+import Untagged.Coercible (coerce)
+import Untagged.OneOf (type (|+|))
+import Untagged.Undefined (Undefined, undefined)
 
 type Props =
   { str :: String
