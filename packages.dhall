@@ -123,6 +123,24 @@ let upstream =
 
 let overrides = {=}
 
-let additions = {=}
+let additions =
+  { literal =
+    { dependencies =
+      [ "assert"
+      , "effect"
+      , "console"
+      , "integers"
+      , "numbers"
+      , "partial"
+      , "psci-support"
+      , "unsafe-coerce"
+      , "typelevel-prelude"
+      ]
+    , repo =
+      "https://github.com/jvliwanag/purescript-literal.git"
+    , version =
+      "90f15465397d313fa903b09b44b82fce53e88a7f"
+   }
+}
 
 in  upstream // overrides // additions
