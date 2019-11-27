@@ -9,17 +9,18 @@ import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Console (log)
-import Literals.Undefined (Undefined)
+import Literals.Undefined (undefined)
 import Test.Assert (assertEqual, assertTrue)
-import Untagged.Union (type (|+|), asOneOf, fromOneOf, reduce, toEither1)
+import Untagged.Coercible (coerce)
+import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf, fromUndefinedOr, getLeft, getLeft', getRight, getRight', reduce, toEither1, uorToMaybe)
 
 type ISB = Int |+| String |+| Boolean
 
 type Props =
   { str :: String
   , isb :: ISB
-  , numOrUndef :: Number |+| Undefined
-  , strOrNumOrUndef :: String |+| Number |+| Undefined
+  , undefOrNumber :: UndefinedOr Number
+  , undefOrStrOrNum :: UndefinedOr (String |+| Number)
   }
 
 testUnion :: Effect Unit
@@ -63,6 +64,47 @@ testUnion = do
   -- left bias:
   assertTrue (isLeft $ toEither1 (asOneOf 3 :: Int |+| Int))
   assertTrue (isLeft $ toEither1 (asOneOf 3.0 :: Int |+| Number))
+
+  -- getLeft / getRight
+  let sbString = asOneOf "foo" :: String |+| Boolean
+  assertEqual
+    { actual: getLeft sbString
+    , expected: Just "foo"
+    }
+  assertEqual
+    { actual: getLeft' sbString
+    , expected: Just "foo"
+    }
+  assertEqual
+    { actual: getRight sbString
+    , expected: Nothing
+    }
+  assertEqual
+    { actual: getRight' sbString
+    , expected: Nothing
+    }
+
+  -- uor utils
+  let soptStr = coerce "foo" :: UndefinedOr String
+  let soptUndef = coerce undefined :: UndefinedOr String
+
+  assertEqual
+    { actual: uorToMaybe soptStr
+    , expected: Just "foo"
+    }
+  assertEqual
+    { actual: uorToMaybe soptUndef
+    , expected: Nothing
+    }
+
+  assertEqual
+    { actual: fromUndefinedOr "baz" soptStr
+    , expected: "foo"
+    }
+  assertEqual
+    { actual: fromUndefinedOr "baz" soptUndef
+    , expected: "baz"
+    }
 
   -- reduce
   let

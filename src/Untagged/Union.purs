@@ -6,6 +6,12 @@ module Untagged.Union
        , asOneOf
        , fromOneOf
        , toEither1
+       , getLeft
+       , getLeft'
+       , getRight
+       , getRight'
+       , uorToMaybe
+       , fromUndefinedOr
        , class Reducible
        , reduce
        ) where
@@ -13,7 +19,7 @@ module Untagged.Union
 import Prelude
 
 import Data.Either (Either(..))
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple.Nested (type (/\), (/\))
 import Foreign (unsafeToForeign)
 import Literals.Undefined (Undefined)
@@ -24,7 +30,7 @@ import Untagged.TypeCheck (class HasRuntimeType, hasRuntimeType)
 
 foreign import data OneOf :: Type -> Type -> Type
 
-instance oneOfEq :: (Eq a, Eq b, HasRuntimeType a, HasRuntimeType b) => Eq (OneOf a b) where
+instance oneOfEq :: (Eq a, Eq b, HasRuntimeType a) => Eq (OneOf a b) where
   eq o o' = case toEither1 o, toEither1 o' of
     Left a, Left a' -> a == a'
     Right b, Right b' -> b == b'
@@ -42,7 +48,7 @@ else instance inOneOfTail :: (InOneOf a h' t') => InOneOf a h (OneOf h' t')
 
 instance coercibleOneOf :: InOneOf a h t => Coercible a (OneOf h t)
 
-type UndefinedOr a = OneOf a Undefined
+type UndefinedOr a = OneOf Undefined a
 
 asOneOf :: forall a h t. Coercible a (OneOf h t) => a -> OneOf h t
 asOneOf = coerce
@@ -59,7 +65,7 @@ fromOneOf f =
 --| `toEither1 x` will return `Left`.
 --|
 --| Example: toEither1 (asOneOf 3.0 :: Int |+| Number) == Left 3
-toEither1 :: forall a b. HasRuntimeType a => HasRuntimeType b => OneOf a b -> Either a b
+toEither1 :: forall a b. HasRuntimeType a => OneOf a b -> Either a b
 toEither1 o =
   if isTypeA (unsafeToForeign o)
   then Left (unsafeCoerce o)
@@ -67,13 +73,50 @@ toEither1 o =
   where
     isTypeA = hasRuntimeType (Proxy :: Proxy a)
 
+getLeft :: forall a b. HasRuntimeType a => OneOf a b -> Maybe a
+getLeft o =
+  if isTypeA (unsafeToForeign o)
+  then Just (unsafeCoerce o)
+  else Nothing
+  where
+    isTypeA = hasRuntimeType (Proxy :: Proxy a)
+
+getLeft' :: forall a b. HasRuntimeType b => OneOf a b -> Maybe a
+getLeft' o =
+  if isTypeB (unsafeToForeign o)
+  then Nothing
+  else Just (unsafeCoerce o)
+  where
+    isTypeB = hasRuntimeType (Proxy :: Proxy b)
+
+getRight :: forall a b. HasRuntimeType b => OneOf a b -> Maybe b
+getRight o =
+  if isTypeB (unsafeToForeign o)
+  then Just (unsafeCoerce o)
+  else Nothing
+  where
+    isTypeB = hasRuntimeType (Proxy :: Proxy b)
+
+getRight' :: forall a b. HasRuntimeType a => OneOf a b -> Maybe b
+getRight' o =
+  if isTypeA (unsafeToForeign o)
+  then Nothing
+  else Just (unsafeCoerce o)
+  where
+    isTypeA = hasRuntimeType (Proxy :: Proxy a)
+
+uorToMaybe :: forall a. UndefinedOr a -> Maybe a
+uorToMaybe = getRight'
+
+fromUndefinedOr :: forall a. a -> UndefinedOr a -> a
+fromUndefinedOr a = fromMaybe a <<< uorToMaybe
+
 class Reducible f i o | i -> f o, f o -> i where
   reduce :: f -> i -> o
 
 instance reduceOneOf ::
   ( Reducible tf b o
   , HasRuntimeType a
-  , HasRuntimeType b
   ) => Reducible ((a -> o) /\ tf) (OneOf a b) o where
   reduce (f /\ tf) o =
     case toEither1 o of
