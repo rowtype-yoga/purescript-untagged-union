@@ -9,17 +9,16 @@ import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Console (log)
-import Literals.Undefined (Undefined)
 import Test.Assert (assertEqual, assertTrue)
-import Untagged.Union (type (|+|), asOneOf, fromOneOf, reduce, toEither1)
+import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf, reduce, toEither1)
 
 type ISB = Int |+| String |+| Boolean
 
 type Props =
   { str :: String
   , isb :: ISB
-  , numOrUndef :: Number |+| Undefined
-  , strOrNumOrUndef :: String |+| Number |+| Undefined
+  , undefOrNumber :: UndefinedOr Number
+  , undefOrStrOrNum :: UndefinedOr (String |+| Number)
   }
 
 testUnion :: Effect Unit

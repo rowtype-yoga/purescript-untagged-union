@@ -24,7 +24,7 @@ import Untagged.TypeCheck (class HasRuntimeType, hasRuntimeType)
 
 foreign import data OneOf :: Type -> Type -> Type
 
-instance oneOfEq :: (Eq a, Eq b, HasRuntimeType a, HasRuntimeType b) => Eq (OneOf a b) where
+instance oneOfEq :: (Eq a, Eq b, HasRuntimeType a) => Eq (OneOf a b) where
   eq o o' = case toEither1 o, toEither1 o' of
     Left a, Left a' -> a == a'
     Right b, Right b' -> b == b'
@@ -42,7 +42,7 @@ else instance inOneOfTail :: (InOneOf a h' t') => InOneOf a h (OneOf h' t')
 
 instance coercibleOneOf :: InOneOf a h t => Coercible a (OneOf h t)
 
-type UndefinedOr a = OneOf a Undefined
+type UndefinedOr a = OneOf Undefined a
 
 asOneOf :: forall a h t. Coercible a (OneOf h t) => a -> OneOf h t
 asOneOf = coerce
@@ -59,7 +59,7 @@ fromOneOf f =
 --| `toEither1 x` will return `Left`.
 --|
 --| Example: toEither1 (asOneOf 3.0 :: Int |+| Number) == Left 3
-toEither1 :: forall a b. HasRuntimeType a => HasRuntimeType b => OneOf a b -> Either a b
+toEither1 :: forall a b. HasRuntimeType a => OneOf a b -> Either a b
 toEither1 o =
   if isTypeA (unsafeToForeign o)
   then Left (unsafeCoerce o)
@@ -73,7 +73,6 @@ class Reducible f i o | i -> f o, f o -> i where
 instance reduceOneOf ::
   ( Reducible tf b o
   , HasRuntimeType a
-  , HasRuntimeType b
   ) => Reducible ((a -> o) /\ tf) (OneOf a b) o where
   reduce (f /\ tf) o =
     case toEither1 o of
