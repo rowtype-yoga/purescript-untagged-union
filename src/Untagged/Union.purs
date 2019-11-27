@@ -16,11 +16,11 @@ import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested (type (/\), (/\))
 import Foreign (unsafeToForeign)
+import Literals.Undefined (Undefined)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 import Untagged.Coercible (class Coercible, coerce)
 import Untagged.TypeCheck (class HasRuntimeType, hasRuntimeType)
-import Untagged.Undefined (Undefined)
 
 foreign import data OneOf :: Type -> Type -> Type
 

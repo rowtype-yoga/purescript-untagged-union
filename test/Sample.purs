@@ -1,9 +1,9 @@
 module Test.Sample where
 
 import Data.Maybe (Maybe)
+import Literals.Undefined (Undefined)
 import Untagged.Coercible (coerce)
 import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf)
-import Untagged.Undefined (Undefined)
 
 type ISB = Int |+| String |+| Boolean
 
