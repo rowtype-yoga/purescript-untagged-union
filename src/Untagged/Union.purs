@@ -6,6 +6,8 @@ module Untagged.Union
        , asOneOf
        , fromOneOf
        , toEither1
+       , getLeft
+       , getRight
        , class Reducible
        , reduce
        ) where
@@ -66,6 +68,22 @@ toEither1 o =
   else Right (unsafeCoerce o)
   where
     isTypeA = hasRuntimeType (Proxy :: Proxy a)
+
+getLeft :: forall a b. HasRuntimeType a => OneOf a b -> Maybe a
+getLeft o =
+  if isTypeA (unsafeToForeign o)
+  then Just (unsafeCoerce o)
+  else Nothing
+  where
+    isTypeA = hasRuntimeType (Proxy :: Proxy a)
+
+getRight :: forall a b. HasRuntimeType b => OneOf a b -> Maybe a
+getRight o =
+  if isTypeB (unsafeToForeign o)
+  then Just (unsafeCoerce o)
+  else Nothing
+  where
+    isTypeB = hasRuntimeType (Proxy :: Proxy b)
 
 class Reducible f i o | i -> f o, f o -> i where
   reduce :: f -> i -> o

@@ -10,7 +10,7 @@ import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Console (log)
 import Test.Assert (assertEqual, assertTrue)
-import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf, reduce, toEither1)
+import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf, getLeft, getRight, reduce, toEither1)
 
 type ISB = Int |+| String |+| Boolean
 
@@ -62,6 +62,17 @@ testUnion = do
   -- left bias:
   assertTrue (isLeft $ toEither1 (asOneOf 3 :: Int |+| Int))
   assertTrue (isLeft $ toEither1 (asOneOf 3.0 :: Int |+| Number))
+
+  -- getLeft / getRight
+  let sbString = asOneOf "foo" :: String |+| Boolean
+  assertEqual
+    { actual: getLeft sbString
+    , expected: Just "foo"
+    }
+  assertEqual
+    { actual: getRight sbString
+    , expected: Nothing
+    }
 
   -- reduce
   let
