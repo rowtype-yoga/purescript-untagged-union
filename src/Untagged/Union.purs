@@ -7,7 +7,11 @@ module Untagged.Union
        , fromOneOf
        , toEither1
        , getLeft
+       , getLeft'
        , getRight
+       , getRight'
+       , uorToMaybe
+       , fromUndefinedOr
        , class Reducible
        , reduce
        ) where
@@ -15,7 +19,7 @@ module Untagged.Union
 import Prelude
 
 import Data.Either (Either(..))
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple.Nested (type (/\), (/\))
 import Foreign (unsafeToForeign)
 import Literals.Undefined (Undefined)
@@ -77,13 +81,35 @@ getLeft o =
   where
     isTypeA = hasRuntimeType (Proxy :: Proxy a)
 
-getRight :: forall a b. HasRuntimeType b => OneOf a b -> Maybe a
+getLeft' :: forall a b. HasRuntimeType b => OneOf a b -> Maybe a
+getLeft' o =
+  if isTypeB (unsafeToForeign o)
+  then Nothing
+  else Just (unsafeCoerce o)
+  where
+    isTypeB = hasRuntimeType (Proxy :: Proxy b)
+
+getRight :: forall a b. HasRuntimeType b => OneOf a b -> Maybe b
 getRight o =
   if isTypeB (unsafeToForeign o)
   then Just (unsafeCoerce o)
   else Nothing
   where
     isTypeB = hasRuntimeType (Proxy :: Proxy b)
+
+getRight' :: forall a b. HasRuntimeType a => OneOf a b -> Maybe b
+getRight' o =
+  if isTypeA (unsafeToForeign o)
+  then Nothing
+  else Just (unsafeCoerce o)
+  where
+    isTypeA = hasRuntimeType (Proxy :: Proxy a)
+
+uorToMaybe :: forall a. UndefinedOr a -> Maybe a
+uorToMaybe = getRight'
+
+fromUndefinedOr :: forall a. a -> UndefinedOr a -> a
+fromUndefinedOr a = fromMaybe a <<< uorToMaybe
 
 class Reducible f i o | i -> f o, f o -> i where
   reduce :: f -> i -> o

@@ -9,8 +9,10 @@ import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Console (log)
+import Literals.Undefined (undefined)
 import Test.Assert (assertEqual, assertTrue)
-import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf, getLeft, getRight, reduce, toEither1)
+import Untagged.Coercible (coerce)
+import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf, fromUndefinedOr, getLeft, getLeft', getRight, getRight', reduce, toEither1, uorToMaybe)
 
 type ISB = Int |+| String |+| Boolean
 
@@ -70,8 +72,38 @@ testUnion = do
     , expected: Just "foo"
     }
   assertEqual
+    { actual: getLeft' sbString
+    , expected: Just "foo"
+    }
+  assertEqual
     { actual: getRight sbString
     , expected: Nothing
+    }
+  assertEqual
+    { actual: getRight' sbString
+    , expected: Nothing
+    }
+
+  -- uor utils
+  let soptStr = coerce "foo" :: UndefinedOr String
+  let soptUndef = coerce undefined :: UndefinedOr String
+
+  assertEqual
+    { actual: uorToMaybe soptStr
+    , expected: Just "foo"
+    }
+  assertEqual
+    { actual: uorToMaybe soptUndef
+    , expected: Nothing
+    }
+
+  assertEqual
+    { actual: fromUndefinedOr "baz" soptStr
+    , expected: "foo"
+    }
+  assertEqual
+    { actual: fromUndefinedOr "baz" soptUndef
+    , expected: "baz"
     }
 
   -- reduce
