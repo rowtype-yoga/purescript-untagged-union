@@ -9,9 +9,9 @@ import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Console (log)
+import Literals.Undefined (Undefined)
 import Test.Assert (assertEqual, assertTrue)
 import Untagged.Union (type (|+|), asOneOf, fromOneOf, reduce, toEither1)
-import Untagged.Undefined (Undefined)
 
 type ISB = Int |+| String |+| Boolean
 

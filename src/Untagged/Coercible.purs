@@ -5,9 +5,9 @@ module Untagged.Coercible
        ) where
 
 import Foreign (Foreign)
+import Literals.Undefined (Undefined)
 import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
 import Unsafe.Coerce (unsafeCoerce)
-import Untagged.Undefined (Undefined)
 
 --| A `Coercible a b` exists if all values of type `a` have
 --| runtime values that can be interpreted as that of type `b`.

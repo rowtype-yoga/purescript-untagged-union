@@ -7,7 +7,7 @@ import Prelude
 import Effect (Effect)
 import Untagged.Coercible (coerce)
 import Untagged.Union (type (|+|))
-import Untagged.Undefined (Undefined, undefined)
+import Literals.Undefined (Undefined, undefined)
 
 type Props =
   { str :: String
