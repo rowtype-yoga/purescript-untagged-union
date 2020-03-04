@@ -10,9 +10,9 @@ import Data.Tuple.Nested ((/\))
 import Effect (Effect)
 import Effect.Console (log)
 import Literals.Undefined (undefined)
-import Test.Assert (assertEqual, assertTrue)
+import Test.Assert (assert, assertEqual, assertTrue)
 import Untagged.Coercible (coerce)
-import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf, fromUndefinedOr, getLeft, getLeft', getRight, getRight', reduce, toEither1, uorToMaybe)
+import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf, fromUndefinedOr, getLeft, getLeft', getRight, getRight', maybeToUor, reduce, toEither1, uorToMaybe, withUor)
 
 type ISB = Int |+| String |+| Boolean
 
@@ -96,6 +96,12 @@ testUnion = do
     { actual: uorToMaybe soptUndef
     , expected: Nothing
     }
+
+  assert $ maybeToUor (Just "foo") == soptStr
+  assert $ maybeToUor Nothing == soptUndef
+
+  assert $ withUor (_ <> "bar") soptStr == coerce "foobar"
+  assert $ withUor (_ <> "bar") soptUndef == coerce undefined
 
   assertEqual
     { actual: fromUndefinedOr "baz" soptStr

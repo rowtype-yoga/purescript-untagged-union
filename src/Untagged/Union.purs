@@ -11,6 +11,8 @@ module Untagged.Union
        , getRight
        , getRight'
        , uorToMaybe
+       , maybeToUor
+       , withUor
        , fromUndefinedOr
        , class Reducible
        , reduce
@@ -22,7 +24,7 @@ import Data.Either (Either(..))
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple.Nested (type (/\), (/\))
 import Foreign (unsafeToForeign)
-import Literals.Undefined (Undefined)
+import Literals.Undefined (Undefined, undefined)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 import Untagged.Coercible (class Coercible, coerce)
@@ -59,6 +61,14 @@ fromOneOf f =
   then Just $ unsafeCoerce f
   else Nothing
 
+withOneOf :: forall a b x. HasRuntimeType a => (a -> x) -> (b -> x) -> OneOf a b -> x
+withOneOf f g o =
+  if isTypeA (unsafeToForeign o)
+  then f (unsafeCoerce o)
+  else g (unsafeCoerce o)
+  where
+    isTypeA = hasRuntimeType (Proxy :: Proxy a)
+
 --| Unwraps a single layer of `OneOf` to an Either
 --| Note that for some `x :: a |+| b`. If the value `x` has a runtime
 --| value that can be read as either types `a` and `b`, then
@@ -66,12 +76,7 @@ fromOneOf f =
 --|
 --| Example: toEither1 (asOneOf 3.0 :: Int |+| Number) == Left 3
 toEither1 :: forall a b. HasRuntimeType a => OneOf a b -> Either a b
-toEither1 o =
-  if isTypeA (unsafeToForeign o)
-  then Left (unsafeCoerce o)
-  else Right (unsafeCoerce o)
-  where
-    isTypeA = hasRuntimeType (Proxy :: Proxy a)
+toEither1 = withOneOf Left Right
 
 getLeft :: forall a b. HasRuntimeType a => OneOf a b -> Maybe a
 getLeft o =
@@ -107,6 +112,16 @@ getRight' o =
 
 uorToMaybe :: forall a. UndefinedOr a -> Maybe a
 uorToMaybe = getRight'
+
+maybeToUor :: forall a. Maybe a -> UndefinedOr a
+maybeToUor (Just a) = unsafeCoerce a
+maybeToUor Nothing = coerce undefined
+
+withUor :: forall a b. (a -> b) -> UndefinedOr a -> UndefinedOr b
+withUor f = withUor' (unsafeCoerce <<< f)
+
+withUor' :: forall a b. (a -> UndefinedOr b) -> UndefinedOr a -> UndefinedOr b
+withUor' f o = withOneOf (const (coerce undefined :: UndefinedOr b)) f o
 
 fromUndefinedOr :: forall a. a -> UndefinedOr a -> a
 fromUndefinedOr a = fromMaybe a <<< uorToMaybe
