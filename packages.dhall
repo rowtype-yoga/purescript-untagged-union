@@ -139,7 +139,7 @@ let additions =
     , repo =
       "https://github.com/jvliwanag/purescript-literal.git"
     , version =
-      "90f15465397d313fa903b09b44b82fce53e88a7f"
+      "7b2ae20f77c67b7e419a92fdd0dc7a09b447b18e"
    }
 }
 
