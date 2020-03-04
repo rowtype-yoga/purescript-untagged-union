@@ -16,13 +16,6 @@ import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf, fromUndefine
 
 type ISB = Int |+| String |+| Boolean
 
-type Props =
-  { str :: String
-  , isb :: ISB
-  , undefOrNumber :: UndefinedOr Number
-  , undefOrStrOrNum :: UndefinedOr (String |+| Number)
-  }
-
 testUnion :: Effect Unit
 testUnion = do
   -- asOneOf compile tests
