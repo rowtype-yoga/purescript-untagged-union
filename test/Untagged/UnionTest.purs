@@ -12,7 +12,7 @@ import Effect.Console (log)
 import Literals.Undefined (undefined)
 import Test.Assert (assert, assertEqual, assertTrue)
 import Untagged.Coercible (coerce)
-import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf, fromUndefinedOr, getLeft, getLeft', getRight, getRight', maybeToUor, reduce, toEither1, uorToMaybe, withUor)
+import Untagged.Union (type (|+|), UndefinedOr, asOneOf, defined, fromOneOf, fromUndefinedOr, getLeft, getLeft', getRight, getRight', maybeToUor, reduce, toEither1, uorToMaybe, withUor)
 
 type ISB = Int |+| String |+| Boolean
 
@@ -79,7 +79,7 @@ testUnion = do
     }
 
   -- uor utils
-  let soptStr = coerce "foo" :: UndefinedOr String
+  let soptStr = defined "foo"
   let soptUndef = coerce undefined :: UndefinedOr String
 
   assertEqual

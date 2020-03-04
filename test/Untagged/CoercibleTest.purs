@@ -13,9 +13,8 @@ type Props =
   { str :: String
   , isb :: Int |+| String |+| Boolean
   , undefOrNumber :: UndefinedOr Number
-  , undefOrStrOrNum :: UndefinedOr (String |+| Number)
+  , undefOrISB :: UndefinedOr (Int |+| String |+| Boolean)
   }
-
 
 testCoerce :: Effect Unit
 testCoerce = do
@@ -25,21 +24,36 @@ testCoerce = do
         coerce { str: "foo"
                , isb: (coerce 3 :: Int |+| String |+| Boolean)
                , undefOrNumber: (coerce 2.0 :: UndefinedOr Number)
-               , undefOrStrOrNum: (coerce "bar" :: UndefinedOr (String |+| Number))
+               , undefOrISB: (coerce "bar" :: UndefinedOr (Int |+| String |+| Boolean))
                } :: Props
 
-  let pNoExplicitOneOf =
+  let pNoExplicitOneOfI =
         coerce { str: "foo"
                , isb: "bar"
                , undefOrNumber: undefined
-               , undefOrStrOrNum: 3.0
+               , undefOrISB: 3
                } :: Props
+
+  let pNoExplicitOneOfS =
+        coerce { str: "foo"
+               , isb: "bar"
+               , undefOrNumber: undefined
+               , undefOrISB: "foo"
+               } :: Props
+
+  let pNoExplicitOneOfB =
+        coerce { str: "foo"
+               , isb: "bar"
+               , undefOrNumber: undefined
+               , undefOrISB: true
+               } :: Props
+
 
   let pMixExplicitOneOf =
         coerce { str: "foo"
                , isb: "bar"
                , undefOrNumber: undefined
-               , undefOrStrOrNum: (coerce "bar" :: UndefinedOr (String |+| Number))
+               , undefOrISB: (coerce "bar" :: UndefinedOr (Int |+| String |+| Boolean))
                } :: Props
 
   let pOmitOptional =
@@ -61,10 +75,10 @@ testCoerce = do
 --               , undefOrStrOrNum: 3.0
 --               } :: Props
 
---  let pWrongNumOrUndef =
+--  let pWrongUndefOrNumber =
 --        coerce { str: "foo"
 --               , undefOrNumber: "bar"
---               , undefOrStrOrNum: 3.0
+--               , undefOrISB: 3
 --               } :: Props
 
 

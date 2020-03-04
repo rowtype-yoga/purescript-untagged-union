@@ -10,6 +10,7 @@ module Untagged.Union
        , getLeft'
        , getRight
        , getRight'
+       , defined
        , uorToMaybe
        , maybeToUor
        , withUor
@@ -109,6 +110,9 @@ getRight' o =
   else Just (unsafeCoerce o)
   where
     isTypeA = hasRuntimeType (Proxy :: Proxy a)
+
+defined :: forall a. a -> UndefinedOr a
+defined = unsafeCoerce
 
 uorToMaybe :: forall a. UndefinedOr a -> Maybe a
 uorToMaybe = getRight'
