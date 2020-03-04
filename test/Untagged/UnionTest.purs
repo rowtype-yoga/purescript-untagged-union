@@ -21,6 +21,7 @@ testUnion = do
   -- asOneOf compile tests
   let isbInt = asOneOf 20 :: ISB
   let isbString = asOneOf "foo" :: ISB
+  let isbBoolean = asOneOf true :: ISB
 
   -- should not compile
   --let isbNumber = asOneOf 3.5 :: ISB
