@@ -1,0 +1,26 @@
+{
+  "name": "purescript-untagged-union",
+  "homepage": "https://github.com/jvliwanag/purescript-untagged-union",
+  "authors": [
+    "Jan Vincent Liwanag <jvliwanag@gmail.com>"
+  ],
+  "description": "A data type for untagged unions",
+  "main": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jvliwanag/purescript-untagged-union.git"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "purescript-literals": "https://github.com/jvliwanag/purescript-literals.git#v0.1.1",
+    "purescript-foreign": "^5.0.0",
+    "purescript-foreign-object": "^2.0.3"
+  }
+}
