@@ -1,4 +1,4 @@
-# purescript-oneof
+# purescript-untagged-union
 
 A data type for untagged unions.
 
