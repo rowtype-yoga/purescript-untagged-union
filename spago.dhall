@@ -6,7 +6,7 @@
     , "effect"
     , "foreign"
     , "foreign-object"
-    , "literal"
+    , "literals"
     , "maybe"
     , "newtype"
     , "proxy"
