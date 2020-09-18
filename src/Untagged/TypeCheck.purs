@@ -12,9 +12,10 @@ import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Symbol (class IsSymbol, SProxy(..), reflectSymbol)
-import Foreign (Foreign, typeOf, unsafeToForeign)
+import Foreign (Foreign, isNull, typeOf, unsafeToForeign)
 import Foreign.Object (Object)
 import Foreign.Object as Object
+import Literals.Null (Null)
 import Literals.Undefined (Undefined)
 import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
 import Type.Proxy (Proxy(..))
@@ -26,6 +27,9 @@ class HasRuntimeType a where
 
 instance hasRuntimeTypeUndefined :: HasRuntimeType Undefined where
   hasRuntimeType _ = hasJsType "undefined"
+
+instance hasRuntimeTypeNull :: HasRuntimeType Null where
+  hasRuntimeType _ = isNull
 
 instance hasRuntimeTypeBoolean :: HasRuntimeType Boolean where
   hasRuntimeType _ = hasJsType "boolean"
