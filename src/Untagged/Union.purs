@@ -53,7 +53,7 @@ instance coercibleOneOf :: InOneOf a h t => Coercible a (OneOf h t)
 
 type UndefinedOr a = OneOf Undefined a
 
-asOneOf :: forall a h t. Coercible a (OneOf h t) => a -> OneOf h t
+asOneOf :: forall a h t. HasRuntimeType a => Coercible a (OneOf h t) => a -> OneOf h t
 asOneOf = coerce
 
 fromOneOf :: forall h t a. InOneOf a h t => HasRuntimeType a => OneOf h t -> Maybe a
