@@ -8,7 +8,6 @@
   , "literals"
   , "maybe"
   , "newtype"
-  , "ordered-collections"
   , "proxy"
   , "psci-support"
   , "tuples"
