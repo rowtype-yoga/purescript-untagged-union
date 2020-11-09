@@ -4,7 +4,9 @@ module Untagged.Coercible
        , coerce
        ) where
 
+import Data.Array.NonEmpty as NA
 import Foreign (Foreign)
+import Foreign.Object (Object)
 import Literals.Undefined (Undefined)
 import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
 import Unsafe.Coerce (unsafeCoerce)
@@ -15,6 +17,11 @@ class Coercible a b
 
 instance coercibleIntNumber :: Coercible Int Number
 instance coercibleCharString :: Coercible Char String
+instance coercibleArray :: Coercible a b => Coercible (Array a) (Array b)
+instance coercibleNonEmptyArray ::
+  Coercible a b => Coercible (NA.NonEmptyArray a) (NA.NonEmptyArray b)
+instance coercibleObject ::
+  Coercible a b => Coercible (Object a) (Object b)
 instance coercibleRecord ::
   ( RowToList r rl
   , RowToList r' rl'
