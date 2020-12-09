@@ -2,7 +2,7 @@ module Test.Sample where
 
 import Data.Maybe (Maybe)
 import Literals.Undefined (Undefined)
-import Untagged.Coercible (coerce)
+import Untagged.Castable (cast)
 import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf)
 
 type ISB = Int |+| String |+| Boolean
@@ -39,7 +39,7 @@ type Props =
 
 sampleProps :: Props
 sampleProps =
-  coerce { text: "foo" -- text is required and should be a string
+  cast { text: "foo" -- text is required and should be a string
 
          , width: 30.0 -- width is optional, and may be defined, but should be a Number
            -- height is optional and may be omitted

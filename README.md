@@ -85,18 +85,18 @@ type Props =
   }
 ```
 
-A `coerce` helper is made available to convert records with the same runtime value:
+A `cast` helper is made available to convert records with the same runtime value:
 
 ```purescript
-import Untagged.Coercible (coerce)
+import Untagged.Castable (cast)
 
 sampleProps :: Props
 sampleProps =
-  coerce { text: "foo" -- text is required and should be a string
+  cast { text: "foo" -- text is required and should be a string
 
-         , width: 30.0 -- width is optional, and may be defined, but should be a Number
-         -- height is optional and may be omitted
-         , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
-         }
+       , width: 30.0 -- width is optional, and may be defined, but should be a Number
+       -- height is optional and may be omitted
+       , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
+       }
 
 ```
