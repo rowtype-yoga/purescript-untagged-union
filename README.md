@@ -100,3 +100,50 @@ sampleProps =
        }
 
 ```
+
+## Nested Unions
+
+Nesting is possible but requires some hints for the compiler.
+
+Consider the following:
+
+```purescript
+type Props =
+  { text :: String -- a required field
+  , width :: UndefinedOr Number
+  , height :: UndefinedOr Number
+  , fontSize :: Undefined |+| String |+| Number
+  }
+
+
+type ContainerProps =
+  { titleProps :: UndefinedOr Props
+  , opacity :: UndefinedOr Number
+  }
+```
+
+In order to create an instance of `ContainerProps`, the type of titleProps must be specified.
+
+```purescript
+sampleContainerProps :: ContainerProps
+sampleContainerProps =
+  cast { titleProps: (cast { text: "Foo" } :: Props)
+       }
+```
+
+Alternatively, helper constructors may be used to aid type inference.
+
+```purescript
+import Untagged.Castable (Castable)
+
+props :: forall r. Castable r Props => r -> Props
+props = cast
+
+containerProps :: forall r. Castable r ContainerProps => r -> ContainerProps
+containerProps = cast
+
+sampleContainerProps' :: ContainerProps
+sampleContainerProps' =
+  containerProps { titleProps: props { text: "Foo" }
+                 }
+```
