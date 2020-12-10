@@ -44,13 +44,13 @@ The library also defines `Undefined`. Combined with `OneOf`, it can represent an
 ```purescript
 import Literals.Undefined
 
-type OptionalInt = Int |+| Undefined
+type OptionalInt = Undefined |+| Int
 ```
 
 An alias `UndefinedOr` is also provided.
 
 ```purescript
-type OptionalInt' = UndefinedOr Int -- Same as `Int |+| Undefined`
+type OptionalInt' = UndefinedOr Int -- Same as `Undefined |+| Int`
 ```
 
 ## Getting a value
@@ -81,7 +81,7 @@ type Props =
   , height :: UndefinedOr Number
 
   -- Optional and Varying types
-  , fontSize :: String |+| Number |+| Undefined
+  , fontSize :: Undefined |+| String |+| Number
   }
 ```
 
