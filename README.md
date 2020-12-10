@@ -44,13 +44,13 @@ The library also defines `Undefined`. Combined with `OneOf`, it can represent an
 ```purescript
 import Literals.Undefined
 
-type OptionalInt = Int |+| Undefined
+type OptionalInt = Undefined |+| Int
 ```
 
 An alias `UndefinedOr` is also provided.
 
 ```purescript
-type OptionalInt' = UndefinedOr Int -- Same as `Int |+| Undefined`
+type OptionalInt' = UndefinedOr Int -- Same as `Undefined |+| Int`
 ```
 
 ## Getting a value
@@ -81,22 +81,22 @@ type Props =
   , height :: UndefinedOr Number
 
   -- Optional and Varying types
-  , fontSize :: String |+| Number |+| Undefined
+  , fontSize :: Undefined |+| String |+| Number
   }
 ```
 
-A `coerce` helper is made available to convert records with the same runtime value:
+A `cast` helper is made available to convert records with the same runtime value:
 
 ```purescript
-import Untagged.Coercible (coerce)
+import Untagged.Castable (cast)
 
 sampleProps :: Props
 sampleProps =
-  coerce { text: "foo" -- text is required and should be a string
+  cast { text: "foo" -- text is required and should be a string
 
-         , width: 30.0 -- width is optional, and may be defined, but should be a Number
-         -- height is optional and may be omitted
-         , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
-         }
+       , width: 30.0 -- width is optional, and may be defined, but should be a Number
+       -- height is optional and may be omitted
+       , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
+       }
 
 ```

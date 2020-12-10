@@ -11,7 +11,7 @@ import Effect (Effect)
 import Effect.Console (log)
 import Literals.Undefined (undefined)
 import Test.Assert (assert, assertEqual, assertTrue)
-import Untagged.Coercible (coerce)
+import Untagged.Castable (cast)
 import Untagged.Union (type (|+|), UndefinedOr, asOneOf, defined, fromOneOf, fromUndefinedOr, getLeft, getLeft', getRight, getRight', maybeToUor, reduce, toEither1, uorToMaybe, withUor)
 
 type ISB = Int |+| String |+| Boolean
@@ -80,7 +80,7 @@ testUnion = do
 
   -- uor utils
   let soptStr = defined "foo"
-  let soptUndef = coerce undefined :: UndefinedOr String
+  let soptUndef = cast undefined :: UndefinedOr String
 
   assertEqual
     { actual: uorToMaybe soptStr
@@ -94,8 +94,8 @@ testUnion = do
   assert $ maybeToUor (Just "foo") == soptStr
   assert $ maybeToUor Nothing == soptUndef
 
-  assert $ withUor (_ <> "bar") soptStr == coerce "foobar"
-  assert $ withUor (_ <> "bar") soptUndef == coerce undefined
+  assert $ withUor (_ <> "bar") soptStr == cast "foobar"
+  assert $ withUor (_ <> "bar") soptUndef == cast undefined
 
   assertEqual
     { actual: fromUndefinedOr "baz" soptStr

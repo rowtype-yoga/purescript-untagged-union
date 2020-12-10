@@ -28,7 +28,7 @@ import Foreign (unsafeToForeign)
 import Literals.Undefined (Undefined, undefined)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
-import Untagged.Coercible (class Coercible, coerce)
+import Untagged.Castable (class Castable, cast)
 import Untagged.TypeCheck (class HasRuntimeType, hasRuntimeType)
 
 foreign import data OneOf :: Type -> Type -> Type
@@ -49,12 +49,12 @@ instance inOneOfHead :: InOneOf a a t
 else instance inOneOfLast :: InOneOf a h a
 else instance inOneOfTail :: (InOneOf a h' t') => InOneOf a h (OneOf h' t')
 
-instance coercibleOneOf :: InOneOf a h t => Coercible a (OneOf h t)
+instance coercibleOneOf :: InOneOf a h t => Castable a (OneOf h t)
 
 type UndefinedOr a = OneOf Undefined a
 
-asOneOf :: forall a h t. Coercible a (OneOf h t) => a -> OneOf h t
-asOneOf = coerce
+asOneOf :: forall a h t. Castable a (OneOf h t) => a -> OneOf h t
+asOneOf = cast
 
 fromOneOf :: forall h t a. InOneOf a h t => HasRuntimeType a => OneOf h t -> Maybe a
 fromOneOf f =
@@ -119,13 +119,13 @@ uorToMaybe = getRight'
 
 maybeToUor :: forall a. Maybe a -> UndefinedOr a
 maybeToUor (Just a) = unsafeCoerce a
-maybeToUor Nothing = coerce undefined
+maybeToUor Nothing = cast undefined
 
 withUor :: forall a b. (a -> b) -> UndefinedOr a -> UndefinedOr b
 withUor f = withUor' (unsafeCoerce <<< f)
 
 withUor' :: forall a b. (a -> UndefinedOr b) -> UndefinedOr a -> UndefinedOr b
-withUor' f o = withOneOf (const (coerce undefined :: UndefinedOr b)) f o
+withUor' f o = withOneOf (const (cast undefined :: UndefinedOr b)) f o
 
 fromUndefinedOr :: forall a. a -> UndefinedOr a -> a
 fromUndefinedOr a = fromMaybe a <<< uorToMaybe

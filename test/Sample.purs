@@ -2,7 +2,7 @@ module Test.Sample where
 
 import Data.Maybe (Maybe)
 import Literals.Undefined (Undefined)
-import Untagged.Coercible (coerce)
+import Untagged.Castable (cast)
 import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf)
 
 type ISB = Int |+| String |+| Boolean
@@ -16,9 +16,9 @@ isb2 = asOneOf "foo"
 --isb3 :: ISB
 --isb3 = asOneOf 3.5
 
-type OptionalInt = Int |+| Undefined
+type OptionalInt = Undefined |+| Int
 
-type OptionalInt' = UndefinedOr Int -- Same as `Int |+| Undefined`
+type OptionalInt' = UndefinedOr Int -- Same as `Undefined |+| Int`
 
 valInt :: Maybe Int
 valInt = fromOneOf isb1 -- evaluates to `Just 20`
@@ -34,15 +34,15 @@ type Props =
   , height :: UndefinedOr Number
 
   -- Optional and Varying types
-  , fontSize :: String |+| Number |+| Undefined
+  , fontSize :: Undefined |+| String |+| Number
   }
 
 sampleProps :: Props
 sampleProps =
-  coerce { text: "foo" -- text is required and should be a string
+  cast { text: "foo" -- text is required and should be a string
 
-         , width: 30.0 -- width is optional, and may be defined, but should be a Number
-           -- height is optional and may be omitted
+       , width: 30.0 -- width is optional, and may be defined, but should be a Number
+         -- height is optional and may be omitted
 
-         , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
-         }
+       , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
+       }
