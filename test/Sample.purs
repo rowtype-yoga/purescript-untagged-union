@@ -2,7 +2,7 @@ module Test.Sample where
 
 import Data.Maybe (Maybe)
 import Literals.Undefined (Undefined)
-import Untagged.Castable (cast)
+import Untagged.Castable (class Castable, cast)
 import Untagged.Union (type (|+|), UndefinedOr, asOneOf, fromOneOf)
 
 type ISB = Int |+| String |+| Boolean
@@ -46,3 +46,26 @@ sampleProps =
 
        , fontSize: "100%" -- fontSize may be defined, and should either be a string or number
        }
+
+-- Nested Unions
+
+type ContainerProps =
+  { titleProps :: UndefinedOr Props
+  , opacity :: UndefinedOr Number
+  }
+
+sampleContainerProps :: ContainerProps
+sampleContainerProps =
+  cast { titleProps: (cast { text: "Foo" } :: Props)
+       }
+
+props :: forall r. Castable r Props => r -> Props
+props = cast
+
+containerProps :: forall r. Castable r ContainerProps => r -> ContainerProps
+containerProps = cast
+
+sampleContainerProps' :: ContainerProps
+sampleContainerProps' =
+  containerProps { titleProps: props { text: "Foo" }
+                 }
