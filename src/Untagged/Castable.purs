@@ -22,7 +22,7 @@ instance castableRecord ::
   ) => Castable {|r} {|r'}
 instance castableForeign :: Castable x Foreign
 
-class CastableRecordRL (rl :: RowList) (rl' :: RowList)
+class CastableRecordRL (rl :: RowList Type) (rl' :: RowList Type)
 
 instance castableRecordRLNil :: CastableRecordRL Nil Nil
 else instance castableRecordRLConsDirect ::

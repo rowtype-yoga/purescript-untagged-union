@@ -58,7 +58,7 @@ instance hasRuntimeTypeRecord ::
   ) => HasRuntimeType {|r} where
   hasRuntimeType _ x = hasJsType "object" x && hasRuntimeTypeRecRL (RLProxy :: _ rl) (unsafeToForeign x)
 
-class HasRuntimeTypeRecordRL (rl :: RowList) where
+class HasRuntimeTypeRecordRL (rl :: RowList Type) where
   hasRuntimeTypeRecRL :: RLProxy rl -> Foreign -> Boolean
 
 instance hasRuntimeTypeRecordRLNil :: HasRuntimeTypeRecordRL Nil where
