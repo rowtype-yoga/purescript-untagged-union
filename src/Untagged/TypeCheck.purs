@@ -21,7 +21,7 @@ import Prim.RowList (class RowToList, Cons, Nil, RowList)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
-class HasRuntimeType :: forall k. k -> Constraint
+class HasRuntimeType :: Type -> Constraint
 class HasRuntimeType a where
   hasRuntimeType :: Proxy a -> Foreign -> Boolean
 
