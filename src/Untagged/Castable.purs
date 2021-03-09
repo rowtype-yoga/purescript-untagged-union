@@ -6,11 +6,12 @@ module Untagged.Castable
 
 import Foreign (Foreign)
 import Literals.Undefined (Undefined)
-import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
+import Prim.RowList (class RowToList, Cons, Nil, RowList)
 import Unsafe.Coerce (unsafeCoerce)
 
 --| A `Castable a b` exists if all values of type `a` have
 --| runtime values that can be interpreted as that of type `b`.
+class Castable :: Type -> Type -> Constraint
 class Castable a b
 
 instance castableIntNumber :: Castable Int Number
@@ -22,7 +23,7 @@ instance castableRecord ::
   ) => Castable {|r} {|r'}
 instance castableForeign :: Castable x Foreign
 
-class CastableRecordRL (rl :: RowList) (rl' :: RowList)
+class CastableRecordRL (rl :: RowList Type) (rl' :: RowList Type)
 
 instance castableRecordRLNil :: CastableRecordRL Nil Nil
 else instance castableRecordRLConsDirect ::

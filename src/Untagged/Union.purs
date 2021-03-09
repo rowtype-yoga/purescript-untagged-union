@@ -44,6 +44,7 @@ instance hasRuntimeTypeOneOf :: (HasRuntimeType a, HasRuntimeType a') => HasRunt
 
 infixr 7 type OneOf as |+|
 
+class InOneOf :: Type -> Type -> Type -> Constraint
 class InOneOf a h t
 instance inOneOfHead :: InOneOf a a t
 else instance inOneOfLast :: InOneOf a h a

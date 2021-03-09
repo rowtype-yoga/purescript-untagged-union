@@ -11,17 +11,17 @@ import Prelude
 
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
-import Data.Symbol (class IsSymbol, SProxy(..), reflectSymbol)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Foreign (Foreign, isNull, typeOf, unsafeToForeign)
 import Foreign.Object (Object)
 import Foreign.Object as Object
 import Literals.Null (Null)
 import Literals.Undefined (Undefined)
-import Prim.RowList (class RowToList, Cons, Nil, kind RowList)
+import Prim.RowList (class RowToList, Cons, Nil, RowList)
 import Type.Proxy (Proxy(..))
-import Type.RowList (RLProxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
+class HasRuntimeType :: Type -> Constraint
 class HasRuntimeType a where
   hasRuntimeType :: Proxy a -> Foreign -> Boolean
 
@@ -56,10 +56,10 @@ instance hasRuntimeTypeRecord ::
   ( RowToList r rl
   , HasRuntimeTypeRecordRL rl
   ) => HasRuntimeType {|r} where
-  hasRuntimeType _ x = hasJsType "object" x && hasRuntimeTypeRecRL (RLProxy :: _ rl) (unsafeToForeign x)
+  hasRuntimeType _ x = hasJsType "object" x && hasRuntimeTypeRecRL (Proxy :: _ rl) (unsafeToForeign x)
 
-class HasRuntimeTypeRecordRL (rl :: RowList) where
-  hasRuntimeTypeRecRL :: RLProxy rl -> Foreign -> Boolean
+class HasRuntimeTypeRecordRL (rl :: RowList Type) where
+  hasRuntimeTypeRecRL :: forall proxy. proxy rl -> Foreign -> Boolean
 
 instance hasRuntimeTypeRecordRLNil :: HasRuntimeTypeRecordRL Nil where
   hasRuntimeTypeRecRL _ _ = true
@@ -72,9 +72,9 @@ instance hasRuntimeTypeRecordRLCons ::
   hasRuntimeTypeRecRL _ x = hasRuntimeTypeA property && hasRuntimeTypeRecRL tlProxy x
     where
       hasRuntimeTypeA = hasRuntimeType (Proxy :: _ a)
-      propertyName = reflectSymbol (SProxy :: _ sym)
+      propertyName = reflectSymbol (Proxy :: _ sym)
       property = getProperty propertyName x
-      tlProxy = RLProxy :: _ tl
+      tlProxy = Proxy :: _ tl
 
 foreign import getProperty :: String -> Foreign -> Foreign
 
