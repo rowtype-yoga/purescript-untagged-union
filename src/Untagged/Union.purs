@@ -21,10 +21,11 @@ module Untagged.Union
 
 import Prelude
 
-import Data.Either (Either(..))
+import Data.Either (Either(..), either)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple.Nested (type (/\), (/\))
 import Foreign (unsafeToForeign)
+import Literals.Null (Null)
 import Literals.Undefined (Undefined, undefined)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
@@ -144,3 +145,20 @@ instance reduceOneOf ::
       Right b -> reduce tf b
 else instance reduceA :: Reducible (a -> b) a b where
   reduce = ($)
+
+instance showOneOfNull1 :: (HasRuntimeType a1, Show a1) => Show (OneOf a1 Null) where
+  show input =
+    input
+    # toEither1
+    # either show (\_ -> "null")
+else instance showOneOfNull2 :: (Show a1) => Show (OneOf Null a1) where
+  show input =
+    input
+    # toEither1
+    # either (\_ -> "null") show
+
+else instance showOneOf :: (HasRuntimeType a1, Show a1, Show a2) => Show (OneOf a1 a2) where
+  show input =
+    input
+    # toEither1
+    # either show show
