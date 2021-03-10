@@ -19,8 +19,8 @@
     "tests"
   ],
   "dependencies": {
-    "purescript-literals": "https://github.com/jvliwanag/purescript-literals.git#v0.1.1",
-    "purescript-foreign": "^5.0.0",
-    "purescript-foreign-object": "^2.0.3"
+    "purescript-literals": "https://github.com/jvliwanag/purescript-literals.git#v0.2.0",
+    "purescript-foreign": "^6.0.0",
+    "purescript-foreign-object": "^3.0.0"
   }
 }
