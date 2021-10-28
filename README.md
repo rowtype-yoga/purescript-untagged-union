@@ -2,6 +2,12 @@
 
 Little helper library to make it easy to convert between [untagged](https://github.com/jvliwanag/purescript-untagged-union) and tagged unions.
 
+## Installation
+
+```bash
+spago install untagged-to-tagged
+```
+
 ## Usage 
 
 Convert an untagged union to a tagged union. E.g. 
