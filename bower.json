@@ -1,0 +1,27 @@
+{
+    "name": "purescript-purescript-untagged-to-tagged",
+    "license": [
+        "MIT-0"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sigma-andex/purescript-typescript-importer.git"
+    },
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "output"
+    ],
+    "dependencies": {
+        "purescript-aff": "^v6.0.0",
+        "purescript-effect": "^v3.0.0",
+        "purescript-either": "^v5.0.0",
+        "purescript-newtype": "^v4.0.0",
+        "purescript-prelude": "^v5.0.1",
+        "purescript-psci-support": "^v5.0.0",
+        "purescript-spec": "^v5.0.1",
+        "purescript-spec-discovery": "^v6.0.0",
+        "purescript-untagged-union": "https://github.com/jvliwanag/purescript-untagged-union.git#v0.3.0"
+    }
+}
