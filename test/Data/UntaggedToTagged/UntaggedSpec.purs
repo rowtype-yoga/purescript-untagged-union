@@ -10,11 +10,12 @@ import Test.Spec.Assertions (shouldEqual)
 import Untagged.Union (type (|+|), asOneOf)
 
 type ISU
-  = Int |+| String
+  = Int |+| String |+| Boolean
 
 data IST
   = IT Int
   | ST String
+  | BT Boolean
 
 derive instance Generic IST _
 instance Show IST where
@@ -31,7 +32,12 @@ spec =
           isul :: ISU
           isul = asOneOf 10
 
-          isur :: ISU
-          isur = asOneOf "Wurst"
+          isurl :: ISU
+          isurl = asOneOf "Wurst"
+
+          isurr :: ISU
+          isurr = asOneOf true
+
         (toTagged isul :: IST) `shouldEqual` (IT 10)
-        (toTagged isur :: IST) `shouldEqual` (ST "Wurst")
+        (toTagged isurl :: IST) `shouldEqual` (ST "Wurst")
+        (toTagged isurr :: IST) `shouldEqual` (BT true)
