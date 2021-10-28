@@ -5,7 +5,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/sigma-andex/purescript-typescript-importer.git"
+        "url": "https://github.com/sigma-andex/purescript-untagged-to-tagged.git"
     },
     "ignore": [
         "**/.*",
