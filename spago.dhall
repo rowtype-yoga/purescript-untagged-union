@@ -3,6 +3,7 @@
   [ "aff"
   , "effect"
   , "either"
+  , "newtype"
   , "prelude"
   , "psci-support"
   , "spec"

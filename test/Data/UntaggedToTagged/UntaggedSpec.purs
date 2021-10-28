@@ -4,7 +4,7 @@ import Prelude
 import Data.Eq.Generic (genericEq)
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
-import Data.UntaggedToTagged (toTagged)
+import Data.UntaggedToTagged.Untagged (toTagged)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Untagged.Union (type (|+|), asOneOf)

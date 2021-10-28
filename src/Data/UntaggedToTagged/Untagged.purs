@@ -1,4 +1,4 @@
-module Data.UntaggedToTagged where
+module Data.UntaggedToTagged.Untagged where
 
 import Prelude
 import Data.Either (Either(..))
