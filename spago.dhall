@@ -1,4 +1,4 @@
-{ name = "purescript-untagged-to-tagged"
+{ name = "untagged-to-tagged"
 , dependencies =
   [ "aff"
   , "effect"
