@@ -28,6 +28,8 @@ else instance
 class Untagged :: Type -> Type -> Constraint
 class Untagged untagged tagged where
   -- | Convert an untagged union to a tagged union. E.g. 
+  -- | 
+  -- | ```purescript
   -- | type ISU = Int |+| String 
   -- | 
   -- | data IST = IT Int | ST String 
@@ -39,6 +41,7 @@ class Untagged untagged tagged where
   -- | ist :: IST 
   -- | ist = toTagged isu
   -- | -- (ST "Wurst")
+  -- | ```
   toTagged :: untagged -> tagged
 
 instance (Generic tagged taggedGen, UntaggedHelper untagged taggedGen) => Untagged untagged tagged where

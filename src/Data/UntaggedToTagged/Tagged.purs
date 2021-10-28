@@ -24,6 +24,8 @@ else instance
 class Tagged :: Type -> Type -> Constraint
 class Tagged tagged untagged where
   -- | Convert a tagged union to an untagged union. E.g. 
+  -- | 
+  -- | ```purescript
   -- | data IST = IT Int | ST String 
   -- | derive instance Generic IST _ 
   -- | 
@@ -35,6 +37,7 @@ class Tagged tagged untagged where
   -- | isu :: ISU 
   -- | isu = fromTagged ist
   -- | -- asOneOf "Wurst"
+  -- | ```
   fromTagged :: tagged -> untagged
 
 instance (Generic tagged taggedGen, TaggedHelper taggedGen untagged) => Tagged tagged untagged where
