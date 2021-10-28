@@ -4,6 +4,8 @@ Little helper library to make it easy to convert between untagged and tagged uni
 
 ## Usage 
 
+Convert an untagged union to a tagged union. E.g. 
+
 ```purescript
 type ISU
   = Int |+| String
@@ -32,4 +34,20 @@ istl = toTagged isul
 istr :: IST 
 istr = toTagged isur 
 -- ST "Wurst"
+```
+
+Convert a tagged union to an untagged union. E.g. 
+
+```purescript
+data IST = IT Int | ST String 
+derive instance Generic IST _ 
+
+type ISU = Int |+| String 
+
+ist :: IST
+ist = ST "Wurst"
+
+isu :: ISU 
+isu = fromTagged ist
+-- asOneOf "Wurst"
 ```

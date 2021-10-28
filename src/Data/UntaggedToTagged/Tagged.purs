@@ -33,7 +33,7 @@ class Tagged tagged untagged where
   -- | ist = ST "Wurst"
   -- | 
   -- | isu :: ISU 
-  -- | isu = fromTagged isu
+  -- | isu = fromTagged ist
   -- | -- asOneOf "Wurst"
   fromTagged :: tagged -> untagged
 
