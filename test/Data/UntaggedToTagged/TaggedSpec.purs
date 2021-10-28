@@ -14,6 +14,7 @@ import Untagged.Union (type (|+|), asOneOf, toEither1)
 type ISU
   = Int |+| String |+| Boolean
 
+-- newtype only for spec (show and eq instance required)
 newtype NTISU
   = NTISU ISU
 instance Newtype NTISU ISU
