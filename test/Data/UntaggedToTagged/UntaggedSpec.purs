@@ -37,7 +37,6 @@ spec =
 
           isurr :: ISU
           isurr = asOneOf true
-
         (toTagged isul :: IST) `shouldEqual` (IT 10)
         (toTagged isurl :: IST) `shouldEqual` (ST "Wurst")
         (toTagged isurr :: IST) `shouldEqual` (BT true)
