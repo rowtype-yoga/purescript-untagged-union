@@ -20,12 +20,11 @@ derive instance Generic IST _
 instance Show IST where
   show = genericShow
 
-let
-    isul :: ISU
-    isul = asOneOf 10
+isul :: ISU
+isul = asOneOf 10
 
-    isur :: ISU
-    isur = asOneOf "Wurst"
+isur :: ISU
+isur = asOneOf "Wurst"
 
 istl :: IST
 istl = toTagged isul 
