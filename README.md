@@ -1,6 +1,6 @@
 # purescript-untagged-to-tagged
 
-Little helper library to make it easy to convert between untagged and tagged unions.
+Little helper library to make it easy to convert between [untagged](https://github.com/jvliwanag/purescript-untagged-union) and tagged unions.
 
 ## Usage 
 
