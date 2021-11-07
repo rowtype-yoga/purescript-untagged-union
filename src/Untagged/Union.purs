@@ -31,7 +31,7 @@ import Unsafe.Coerce (unsafeCoerce)
 import Untagged.Castable (class Castable, cast)
 import Untagged.TypeCheck (class HasRuntimeType, hasRuntimeType)
 
-foreign import data OneOf :: Type -> Type -> Type
+foreign import data OneOf :: forall l r. l -> r -> Type
 
 instance oneOfEq :: (Eq a, Eq b, HasRuntimeType a) => Eq (OneOf a b) where
   eq o o' = case toEither1 o, toEither1 o' of
@@ -52,6 +52,7 @@ else instance inOneOfTail :: (InOneOf a h' t') => InOneOf a h (OneOf h' t')
 
 instance coercibleOneOf :: InOneOf a h t => Castable a (OneOf h t)
 
+type UndefinedOr :: forall k. k -> Type
 type UndefinedOr a = OneOf Undefined a
 
 asOneOf :: forall a h t. Castable a (OneOf h t) => a -> OneOf h t
@@ -125,7 +126,7 @@ maybeToUor Nothing = cast undefined
 withUor :: forall a b. (a -> b) -> UndefinedOr a -> UndefinedOr b
 withUor f = withUor' (unsafeCoerce <<< f)
 
-withUor' :: forall a b. (a -> UndefinedOr b) -> UndefinedOr a -> UndefinedOr b
+withUor' :: forall a (b :: Type). (a -> UndefinedOr b) -> UndefinedOr a -> UndefinedOr b
 withUor' f o = withOneOf (const (cast undefined :: UndefinedOr b)) f o
 
 fromUndefinedOr :: forall a. a -> UndefinedOr a -> a
