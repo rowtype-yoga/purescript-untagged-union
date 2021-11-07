@@ -11,7 +11,7 @@ import Unsafe.Coerce (unsafeCoerce)
 
 --| A `Castable a b` exists if all values of type `a` have
 --| runtime values that can be interpreted as that of type `b`.
-class Castable :: Type -> Type -> Constraint
+class Castable :: forall k1 k2. k1 -> k2 -> Constraint
 class Castable a b
 
 instance castableIntNumber :: Castable Int Number
