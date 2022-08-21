@@ -1,26 +1,30 @@
 {
-  "name": "purescript-untagged-union",
-  "homepage": "https://github.com/rowtype-yoga/purescript-untagged-union",
-  "authors": [
-    "Jan Vincent Liwanag <jvliwanag@gmail.com>"
-  ],
-  "description": "A data type for untagged unions",
-  "main": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/rowtype-yoga/purescript-untagged-union.git"
-  },
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "purescript-literals": "https://github.com/rowtype-yoga/purescript-literals.git#v0.2.0",
-    "purescript-foreign": "^6.0.0",
-    "purescript-foreign-object": "^3.0.0"
-  }
+    "name": "purescript-untagged-union",
+    "license": [
+        "MIT"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/rowtype-yoga/purescript-untagged-union.git"
+    },
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "output"
+    ],
+    "dependencies": {
+        "purescript-assert": "^v6.0.0",
+        "purescript-console": "^v6.0.0",
+        "purescript-effect": "^v4.0.0",
+        "purescript-either": "^v6.1.0",
+        "purescript-foreign": "^v7.0.0",
+        "purescript-foreign-object": "^v4.0.0",
+        "purescript-literals": "https://github.com/rowtype-yoga/purescript-literals.git#v1.0.2",
+        "purescript-maybe": "^v6.0.0",
+        "purescript-newtype": "^v5.0.0",
+        "purescript-prelude": "^v6.0.0",
+        "purescript-tuples": "^v7.0.0",
+        "purescript-unsafe-coerce": "^v6.0.0"
+    }
 }
