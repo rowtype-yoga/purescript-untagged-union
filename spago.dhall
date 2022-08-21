@@ -1,6 +1,6 @@
 { name = "untagged-union"
 , license = "MIT"
-, repository = "https://github.com/jvliwanag/purescript-untagged-union.git"
+, repository = "https://github.com/rowtype-yoga/purescript-untagged-union.git"
 , dependencies =
   [ "assert"
   , "console"
