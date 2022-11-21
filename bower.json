@@ -14,14 +14,9 @@
         "output"
     ],
     "dependencies": {
-        "purescript-aff": "^v6.0.0",
-        "purescript-effect": "^v3.0.0",
-        "purescript-either": "^v5.0.0",
-        "purescript-newtype": "^v4.0.0",
-        "purescript-prelude": "^v5.0.1",
-        "purescript-psci-support": "^v5.0.0",
-        "purescript-spec": "^v5.0.1",
-        "purescript-spec-discovery": "^v6.0.0",
-        "purescript-untagged-union": "https://github.com/jvliwanag/purescript-untagged-union.git#v0.3.0"
+        "purescript-either": "^v6.1.0",
+        "purescript-newtype": "^v5.0.0",
+        "purescript-prelude": "^v6.0.1",
+        "purescript-untagged-union": "https://github.com/rowtype-yoga/purescript-untagged-union.git#v1.0.0"
     }
 }
